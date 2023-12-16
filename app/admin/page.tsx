@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "@/types/supabase";
-import { Button } from "@/components/ui/button";
+import { LoadingButton } from "@/components/loading-button";
 import { redirect } from "next/navigation";
 
 export default async function Admin() {
@@ -82,7 +82,7 @@ export default async function Admin() {
         <div>Period: {gamePeriod}</div>
         <form className="flex flex-wrap justify-center gap-6" action={admin}>
           <input type="number" inputMode="numeric" name="inc" required />
-          <Button type="submit">Magic</Button>
+          <LoadingButton />
           <input type="hidden" name="dn" value={password} />
           <input type="hidden" name="id" value={gameId} />
           <input type="hidden" name="per" value={gamePeriod} />
@@ -95,7 +95,7 @@ export default async function Admin() {
     <main className="min-h-screen flex justify-center items-center text-2xl p-12">
       <form className="flex flex-wrap justify-center gap-6" action={setCookie}>
         <input type="password" name="adminpw" placeholder="Password" />
-        <Button type="submit">Enter</Button>
+        <LoadingButton />
       </form>
     </main>
   );
