@@ -140,29 +140,30 @@ export default async function Home() {
     redirect("/");
   }
 
+  const fApple = parseFloat(apple.toFixed(2));
+  const fBalance = parseFloat(balance.toFixed(2));
+  const fBalance75 = parseFloat((balance * 0.75).toFixed(2));
+  const fBalance50 = parseFloat((balance * 0.5).toFixed(2));
+  const fBalance25 = parseFloat((balance * 0.25).toFixed(2));
+
   return (
     <main className="min-h-screen flex flex-col justify-center items-center gap-6 text-xl p-12">
       <div className="flex gap-6">
         <div>
-          Apple:{" "}
-          <span className="font-bold text-red-400">
-            {parseFloat(apple.toFixed(2))}
-          </span>
+          Apple: <span className="font-bold text-red-400">{fApple}</span>
         </div>
         <div>
           Game Lira:{" "}
-          <span className="font-bold text-green-400">
-            {parseFloat(balance.toFixed(2))}
-          </span>
+          <span className="font-bold text-green-400">{fBalance}</span>
         </div>
       </div>
       <form className="flex flex-col gap-12 items-center" action={play}>
         <div className="flex font-bold text-center">Select the bid amount</div>
         <div className="flex flex-col gap-16">
-          <DeezButton val={balance} />
-          <DeezButton val={balance * 0.75} />
-          <DeezButton val={balance * 0.5} />
-          <DeezButton val={balance * 0.25} />
+          <DeezButton val={fBalance} />
+          <DeezButton val={fBalance75} />
+          <DeezButton val={fBalance50} />
+          <DeezButton val={fBalance25} />
         </div>
       </form>
     </main>
