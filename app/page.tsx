@@ -6,6 +6,11 @@ import { GameFetcher } from "@/components/game-fetcher";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+import dynamic from 'next/dynamic'
+const ResultPage = dynamic(() => import('../components/result-page'), {
+  ssr: false,
+})
+
 export default async function Home() {
   const header = headers();
   const ip = header.get("x-real-ip") ?? "127.0.0.1";
@@ -41,6 +46,22 @@ export default async function Home() {
   const gamePeriod = game[0].period;
   const gameActive = game[0].active;
 
+  if (!gameActive) {
+    const { data: logs, error: logsError } = await supabase
+      .from("ilogs")
+      .select("balances, expenditure, period, price")
+      .eq("game", gameId);
+    if (logsError) {
+      redirect(`/?error=${logsError.message}`);
+    }
+
+    return (
+      <main className="min-h-screen flex flex-col justify-center items-center gap-16 py-24">
+        <ResultPage data={logs} />
+      </main>
+    );
+  }
+
   const { data: player, error: playerError } = await supabase
     .from("iplayers")
     .select("id, apple, balance, period")
@@ -54,6 +75,14 @@ export default async function Home() {
   let apple = player[0]?.apple ?? 0;
   let balance = player[0]?.balance ?? 10;
   let playerPeriod = player[0]?.period ?? 0;
+
+  if (gamePeriod > playerPeriod) {
+    return (
+      <main className="min-h-screen flex justify-center items-center text-2xl p-12">
+        <div className="flex">You are late</div>
+      </main>
+    );
+  }
 
   if (player.length === 0) {
     const { data: newPlayer, error: newError } = await supabase
@@ -69,14 +98,6 @@ export default async function Home() {
     playerId = newPlayer[0]?.id;
   }
 
-  if (gamePeriod > playerPeriod) {
-    return (
-      <main className="min-h-screen flex justify-center items-center text-2xl p-12">
-        <div className="flex">You are late</div>
-      </main>
-    );
-  }
-
   if (gamePeriod < playerPeriod) {
     return (
       <main className="min-h-screen flex flex-col justify-center items-center gap-6 text-2xl p-12">
@@ -87,14 +108,6 @@ export default async function Home() {
           </span>
         </div>
         <GameFetcher per={playerPeriod} />
-      </main>
-    );
-  }
-
-  if (!gameActive) {
-    return (
-      <main className="min-h-screen flex justify-center items-center text-2xl p-12">
-        <div className="flex">Game is not active</div>
       </main>
     );
   }
