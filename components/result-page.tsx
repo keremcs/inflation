@@ -53,7 +53,7 @@ export default function ResultPage({ data }: { data: Logs }) {
 
   return (
     <>
-      <div className="flex flex-wrap justify-center gap-16">
+      <div className="flex flex-wrap justify-center gap-16 scale-75 sm:scale-100">
         <LineChart
           width={400}
           height={400}
@@ -121,7 +121,7 @@ export default function ResultPage({ data }: { data: Logs }) {
           />
         </LineChart>
       </div>
-      <div className="flex flex-wrap justify-center gap-16">
+      <div className="flex flex-wrap justify-center gap-16 scale-75 sm:scale-100">
         <LineChart
           width={400}
           height={400}
