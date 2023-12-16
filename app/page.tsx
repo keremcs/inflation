@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "@/types/supabase";
 import { DeezButton } from "@/components/deez-button";
+import { GameFetcher } from "@/components/game-fetcher";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
@@ -68,7 +69,15 @@ export default async function Home() {
     playerId = newPlayer[0]?.id;
   }
 
-  if (gamePeriod !== playerPeriod) {
+  if (gamePeriod > playerPeriod) {
+    return (
+      <main className="min-h-screen flex justify-center items-center text-2xl p-12">
+        <div className="flex">You are late</div>
+      </main>
+    );
+  }
+
+  if (gamePeriod < playerPeriod) {
     return (
       <main className="min-h-screen flex flex-col justify-center items-center gap-6 text-2xl p-12">
         <div>
@@ -77,7 +86,7 @@ export default async function Home() {
             {parseFloat(balance.toFixed(2))}
           </span>
         </div>
-        <div className="flex">Waiting for the next period</div>
+        <GameFetcher per={playerPeriod} />
       </main>
     );
   }
