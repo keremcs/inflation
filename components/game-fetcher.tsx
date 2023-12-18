@@ -22,12 +22,16 @@ export function GameFetcher({
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       );
 
-      const { data, error } = await supabase.from("igames").select("period");
+      const { data, error } = await supabase
+        .from("igames")
+        .select("active, period");
       if (error || data.length === 0) {
         return;
       }
 
-      if (data[0].period === player.period) {
+      const isActive = data[0].active;
+
+      if (!isActive || data[0].period === player.period) {
         return router.refresh();
       }
     };

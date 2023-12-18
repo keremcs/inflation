@@ -81,7 +81,13 @@ export default async function Admin() {
         <div>Game: {gameId}</div>
         <div>Period: {gamePeriod}</div>
         <form className="flex flex-wrap justify-center gap-6" action={admin}>
-          <input type="number" inputMode="numeric" name="inc" required />
+          <input
+            type="number"
+            inputMode="numeric"
+            name="inc"
+            step={0.01}
+            required
+          />
           <LoadingButton />
           <input type="hidden" name="dn" value={password} />
           <input type="hidden" name="id" value={gameId} />

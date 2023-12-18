@@ -77,11 +77,7 @@ export default async function Home() {
   let demand = player[0]?.demand ?? 0;
   let playerPeriod = player[0]?.period ?? 0;
 
-  // const fApple = parseFloat(apple.toFixed(2));
   const fBalance = parseFloat(balance.toFixed(2));
-  const fBalance75 = parseFloat((balance * 0.75).toFixed(2));
-  const fBalance50 = parseFloat((balance * 0.5).toFixed(2));
-  const fBalance25 = parseFloat((balance * 0.25).toFixed(2));
 
   if (gamePeriod > playerPeriod) {
     return (
@@ -147,7 +143,6 @@ export default async function Home() {
     const { error } = await supabaseAction
       .from("iplayers")
       .update({
-        balance: balance - parsed.data.amount,
         demand: parsed.data.amount,
         period: playerPeriod + 1,
       })
@@ -160,24 +155,36 @@ export default async function Home() {
     redirect("/");
   }
 
+  const { data: log, error: logError } = await supabase
+    .from("ilogs")
+    .select("price")
+    .eq("game", gameId)
+    .eq("period", gamePeriod - 1);
+  if (logError) {
+    redirect(`/?error=${logError.message}`);
+  }
+
+  const fPrice = parseFloat((log[0]?.price ?? 0).toFixed(2));
+
   return (
     <main className="min-h-screen flex flex-col justify-center items-center gap-6 text-xl p-12">
       <div>
         You have <span className="font-bold text-green-400">{fBalance}</span>{" "}
         Game Liras (GL)
       </div>
+      {gamePeriod > 0 && <div>Last period apple price: {fPrice}</div>}
       <form className="flex flex-col gap-6 items-center" action={play}>
         <div className="flex font-bold text-center">
           How much would you spend?
         </div>
         <div>
           <div className="flex">
-            <DeezButton val={fBalance} />
-            <DeezButton val={fBalance75} />
+            <DeezButton val={balance} />
+            <DeezButton val={balance * 0.75} />
           </div>
           <div className="flex">
-            <DeezButton val={fBalance50} />
-            <DeezButton val={fBalance25} />
+            <DeezButton val={balance * 0.5} />
+            <DeezButton val={balance * 0.25} />
           </div>
         </div>
       </form>

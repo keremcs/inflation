@@ -4,12 +4,13 @@ import { useFormStatus } from "react-dom";
 
 export function DeezButton({ val }: { val: number }) {
   const { pending } = useFormStatus();
+  const fVal = parseFloat(val.toFixed(2));
   return pending ? (
     <button
       className="w-40 h-40 opacity-25 bg-secondary border border-primary font-bold"
       disabled
     >
-      {val} GL
+      {fVal} GL
     </button>
   ) : (
     <button
@@ -18,7 +19,7 @@ export function DeezButton({ val }: { val: number }) {
       name="bid"
       value={val}
     >
-      {val} GL
+      {fVal} GL
     </button>
   );
 }
