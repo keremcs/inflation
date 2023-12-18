@@ -5,7 +5,15 @@ import { Database } from "@/types/supabase";
 import { createBrowserClient } from "@supabase/ssr";
 import { useRouter } from "next/navigation";
 
-export function GameFetcher({ per }: { per: number }) {
+export function GameFetcher({
+  player,
+}: {
+  player: {
+    fBalance: number;
+    demand: number;
+    period: number;
+  };
+}) {
   const router = useRouter();
   useEffect(() => {
     const fetchData = async () => {
@@ -19,14 +27,20 @@ export function GameFetcher({ per }: { per: number }) {
         return;
       }
 
-      if (data[0].period === per) {
+      if (data[0].period === player.period) {
         return router.refresh();
       }
     };
 
     const interval = setInterval(fetchData, 3000);
     return () => clearInterval(interval);
-  }, [per, router]);
+  }, [player, router]);
 
-  return <div className="flex">Waiting for the next period</div>;
+  return (
+    <>
+      <div className="flex">Balance: {player.fBalance} GL</div>
+      <div className="flex">Spending: {player.demand} GL</div>
+      <div className="flex">Waiting for other players</div>
+    </>
+  );
 }

@@ -64,7 +64,7 @@ export default async function Home() {
 
   const { data: player, error: playerError } = await supabase
     .from("iplayers")
-    .select("id, apple, balance, period")
+    .select("id, apple, balance, demand, period")
     .eq("ip", ip)
     .eq("game", gameId);
   if (playerError) {
@@ -72,11 +72,12 @@ export default async function Home() {
   }
 
   let playerId = player[0]?.id;
-  let apple = player[0]?.apple ?? 0;
+  // let apple = player[0]?.apple ?? 0;
   let balance = player[0]?.balance ?? 10;
+  let demand = player[0]?.demand ?? 0;
   let playerPeriod = player[0]?.period ?? 0;
 
-  const fApple = parseFloat(apple.toFixed(2));
+  // const fApple = parseFloat(apple.toFixed(2));
   const fBalance = parseFloat(balance.toFixed(2));
   const fBalance75 = parseFloat((balance * 0.75).toFixed(2));
   const fBalance50 = parseFloat((balance * 0.5).toFixed(2));
@@ -104,16 +105,16 @@ export default async function Home() {
     playerId = newPlayer[0]?.id;
   }
 
+  const playerData = {
+    fBalance,
+    demand,
+    period: playerPeriod,
+  };
+
   if (gamePeriod < playerPeriod) {
     return (
       <main className="min-h-screen flex flex-col justify-center items-center gap-6 text-2xl p-12">
-        <div>
-          <span className="font-bold text-red-400">{fApple}</span> kg Apple
-        </div>
-        <div>
-          <span className="font-bold text-green-400">{fBalance}</span> Game Lira
-        </div>
-        <GameFetcher per={playerPeriod} />
+        <GameFetcher player={playerData} />
       </main>
     );
   }
@@ -162,13 +163,13 @@ export default async function Home() {
   return (
     <main className="min-h-screen flex flex-col justify-center items-center gap-6 text-xl p-12">
       <div>
-        <span className="font-bold text-red-400">{fApple}</span> kg Apple
-      </div>
-      <div>
-        <span className="font-bold text-green-400">{fBalance}</span> Game Lira
+        You have <span className="font-bold text-green-400">{fBalance}</span>{" "}
+        Game Liras (GL)
       </div>
       <form className="flex flex-col gap-6 items-center" action={play}>
-        <div className="flex font-bold text-center">Select your bid</div>
+        <div className="flex font-bold text-center">
+          How much would you spend?
+        </div>
         <div>
           <div className="flex">
             <DeezButton val={fBalance} />
