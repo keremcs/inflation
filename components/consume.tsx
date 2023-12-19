@@ -18,9 +18,9 @@ export default function Consume({
       <>
         <div className="flex items-center gap-1">
           Last period&apos;s apple price:
+          <span>{parseFloat(price.toFixed(2))}</span>
           {period > 1 && (
             <>
-              <span>{parseFloat(price.toFixed(2))}</span>
               <span
                 className={`text-xs sm:text-lg ${
                   inflation > 0 ? "text-green-500" : "text-red-500"
