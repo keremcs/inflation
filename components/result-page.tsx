@@ -13,8 +13,7 @@ export default function ResultPage({ data }: { data: Logs }) {
   const plain = data.map((item) => {
     return {
       period: item.period,
-      money: parseFloat(item.balances.toFixed(2)),
-      expenditure: item.expenditure,
+      money: item.balances,
       price: item.price,
       velocity: parseFloat(
         ((item.expenditure / item.balances) * 100).toFixed(2)
@@ -22,31 +21,22 @@ export default function ResultPage({ data }: { data: Logs }) {
     };
   });
 
-  // const log = plain.map((item) => {
-  //   return {
-  //     period: item.period,
-  //     money: parseFloat(Math.log(item.money).toFixed(2)),
-  //     expenditure: parseFloat(Math.log(item.expenditure).toFixed(2)),
-  //     price: parseFloat(Math.log(item.price).toFixed(2)),
-  //   };
-  // });
-
   const growth = plain.map((item, index) => {
     if (index === 0) {
       return {
         period: 0,
-        money: 0,
-        price: 0,
+        money: 30,
+        price: 30,
       };
     }
 
     return {
       period: item.period,
       money: parseFloat(
-        (Math.log(item.money / plain[index - 1]?.money) * 100).toFixed(2)
+        ((item.money / plain[index - 1]?.money - 1) * 100).toFixed(2)
       ),
       price: parseFloat(
-        (Math.log(item.price / plain[index - 1]?.price) * 100).toFixed(2)
+        ((item.price / plain[index - 1]?.price - 1) * 100).toFixed(2)
       ),
     };
   });
@@ -71,7 +61,7 @@ export default function ResultPage({ data }: { data: Logs }) {
           />
           <YAxis />
           <Tooltip contentStyle={{ background: "black" }} />
-          <Legend verticalAlign="top" />
+          <Legend verticalAlign="top" height={36} />
           <Line
             dot={false}
             type="monotone"
@@ -104,7 +94,7 @@ export default function ResultPage({ data }: { data: Logs }) {
           />
           <YAxis />
           <Tooltip contentStyle={{ background: "black" }} />
-          <Legend verticalAlign="top" />
+          <Legend verticalAlign="top" height={36} />
           <Line
             dot={false}
             type="monotone"

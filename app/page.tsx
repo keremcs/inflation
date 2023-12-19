@@ -10,10 +10,13 @@ import dynamic from "next/dynamic";
 const ResultPage = dynamic(() => import("../components/result-page"), {
   ssr: false,
 });
+const Consume = dynamic(() => import("../components/consume"), {
+  ssr: false,
+});
 
 export default async function Home() {
   const header = headers();
-  const ip = header.get("x-real-ip") ?? "127.0.0.1";
+  const ip = header.get("x-real-ip") ?? "127.0.0.1"; // header.get("x-forwarded-for")
 
   const supabase = createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -64,7 +67,7 @@ export default async function Home() {
 
   const { data: player, error: playerError } = await supabase
     .from("iplayers")
-    .select("id, apple, balance, demand, period")
+    .select("id, balance, demand, period")
     .eq("ip", ip)
     .eq("game", gameId);
   if (playerError) {
@@ -72,10 +75,9 @@ export default async function Home() {
   }
 
   let playerId = player[0]?.id;
-  // let apple = player[0]?.apple ?? 0;
-  let balance = player[0]?.balance ?? 10;
-  let demand = player[0]?.demand ?? 0;
-  let playerPeriod = player[0]?.period ?? 0;
+  const demand = player[0]?.demand ?? 0;
+  const balance = player[0]?.balance ?? 10;
+  const playerPeriod = player[0]?.period ?? 0;
 
   const fBalance = parseFloat(balance.toFixed(2));
 
@@ -164,15 +166,15 @@ export default async function Home() {
     redirect(`/?error=${logError.message}`);
   }
 
-  const fPrice = parseFloat((log[0]?.price ?? 0).toFixed(2));
+  const price = log[0]?.price ?? 0;
 
   return (
-    <main className="min-h-screen flex flex-col justify-center items-center gap-6 text-xl p-12">
+    <main className="min-h-screen flex flex-col justify-center items-center gap-6 text-lg sm:text-2xl p-12">
       <div>
         You have <span className="font-bold text-green-400">{fBalance}</span>{" "}
         Game Liras (GL)
       </div>
-      {gamePeriod > 0 && <div>Last period apple price: {fPrice}</div>}
+      <Consume period={gamePeriod} price={price} />
       <form className="flex flex-col gap-6 items-center" action={play}>
         <div className="flex font-bold text-center">
           How much would you spend?

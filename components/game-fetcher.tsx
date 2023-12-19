@@ -15,6 +15,9 @@ export function GameFetcher({
   };
 }) {
   const router = useRouter();
+
+  localStorage.setItem(`demand${player.period - 1}`, player.demand.toFixed(4));
+
   useEffect(() => {
     const fetchData = async () => {
       const supabase = createBrowserClient<Database>(
@@ -43,7 +46,9 @@ export function GameFetcher({
   return (
     <>
       <div className="flex">Balance: {player.fBalance} GL</div>
-      <div className="flex">Spending: {player.demand} GL</div>
+      <div className="flex">
+        Spending: {parseFloat(player.demand.toFixed(2))} GL
+      </div>
       <div className="flex">Waiting for other players</div>
     </>
   );
