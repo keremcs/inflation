@@ -49,6 +49,32 @@ export default async function Home() {
   const gamePeriod = game[0].period;
   const gameActive = game[0].active;
 
+  const { data: player, error: playerError } = await supabase
+    .from("iplayers")
+    .select("id, apple, balance, demand, period")
+    .eq("ip", ip)
+    .eq("game", gameId);
+  if (playerError) {
+    redirect(`/?error=${playerError.message}`);
+  }
+
+  let playerId = player[0]?.id;
+  const apple = player[0]?.apple ?? 0;
+  const demand = player[0]?.demand ?? 0;
+  const balance = player[0]?.balance ?? 10;
+  const playerPeriod = player[0]?.period ?? 0;
+
+  const fApple = parseFloat(apple.toFixed(2));
+  const fBalance = parseFloat(balance.toFixed(2));
+
+  if (gamePeriod > playerPeriod) {
+    return (
+      <main className="min-h-screen flex justify-center items-center text-2xl p-12">
+        <div className="flex">You are late</div>
+      </main>
+    );
+  }
+
   if (!gameActive) {
     const { data: logs, error: logsError } = await supabase
       .from("ilogs")
@@ -59,32 +85,8 @@ export default async function Home() {
     }
 
     return (
-      <main className="min-h-screen flex flex-col justify-center items-center gap-16 py-24">
-        <ResultPage data={logs} />
-      </main>
-    );
-  }
-
-  const { data: player, error: playerError } = await supabase
-    .from("iplayers")
-    .select("id, balance, demand, period")
-    .eq("ip", ip)
-    .eq("game", gameId);
-  if (playerError) {
-    redirect(`/?error=${playerError.message}`);
-  }
-
-  let playerId = player[0]?.id;
-  const demand = player[0]?.demand ?? 0;
-  const balance = player[0]?.balance ?? 10;
-  const playerPeriod = player[0]?.period ?? 0;
-
-  const fBalance = parseFloat(balance.toFixed(2));
-
-  if (gamePeriod > playerPeriod) {
-    return (
-      <main className="min-h-screen flex justify-center items-center text-2xl p-12">
-        <div className="flex">You are late</div>
+      <main className="min-h-screen flex flex-col justify-center items-center p-12">
+        <ResultPage apple={fApple} data={logs} />
       </main>
     );
   }

@@ -9,7 +9,13 @@ type Logs = {
   price: number;
 }[];
 
-export default function ResultPage({ data }: { data: Logs }) {
+export default function ResultPage({
+  apple,
+  data,
+}: {
+  apple: number;
+  data: Logs;
+}) {
   const plain = data.map((item) => {
     return {
       period: item.period,
@@ -43,6 +49,12 @@ export default function ResultPage({ data }: { data: Logs }) {
 
   return (
     <>
+      {apple > 0 && (
+        <div className="flex gap-1">
+          Your total apple consumption:
+          <span className="text-red-500">{apple}</span> kg
+        </div>
+      )}
       <div className="flex flex-wrap justify-center gap-16 scale-75 sm:scale-100">
         <LineChart
           width={400}

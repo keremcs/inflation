@@ -51,6 +51,51 @@ export default async function Admin() {
     redirect("/admin");
   }
 
+  async function endgame(formData: FormData) {
+    "use server";
+
+    const pw = String(formData.get("dn"));
+    if (pw !== process.env.NEXT_PRIVATE_ADMIN_PASSWORD) {
+      redirect("/admin?error=Wrong%20password");
+    }
+
+    const supabaseAction = createClient<Database>(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PRIVATE_SUPABASE_SERVICE_ROLE_KEY!,
+      {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+          detectSessionInUrl: false,
+        },
+      }
+    );
+
+    const id = Number(formData.get("id"));
+    const { error } = await supabaseAction
+      .from("igames")
+      .update({
+        active: false,
+      })
+      .eq("id", id);
+    if (error) {
+      redirect(`/admin?error=${error.message}`);
+    }
+
+    const per = Number(formData.get("per"));
+    const inc = Number(formData.get("inc"));
+    const { error: rpcError } = await supabaseAction.rpc("magic", {
+      game_id: id,
+      income: inc,
+      perio: per,
+    });
+    if (rpcError) {
+      redirect(`/admin?error=${rpcError.message}`);
+    }
+
+    redirect("/admin");
+  }
+
   if (password === process.env.NEXT_PRIVATE_ADMIN_PASSWORD) {
     const supabase = createClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -66,22 +111,53 @@ export default async function Admin() {
 
     const { data: game, error: gameError } = await supabase
       .from("igames")
-      .select("id, period");
+      .select("id, active, period");
     if (gameError) {
       redirect(`/admin?error=${gameError.message}`);
     }
     if (game.length === 0) {
       redirect("/admin?error=Game%20not%20found");
     }
+
     const gameId = game[0].id;
+    const isActive = game[0].active;
     const gamePeriod = game[0].period;
 
     return (
       <main className="min-h-screen flex flex-col justify-center items-center text-2xl gap-6 p-12">
+        {isActive ? (
+          <span className="text-green-500">Game is active</span>
+        ) : (
+          <span className="text-red-500">Game Ended</span>
+        )}
         <div>Game: {gameId}</div>
         <div>Period: {gamePeriod}</div>
-        <form className="flex flex-wrap justify-center gap-6" action={admin}>
-          <input type="number" name="inc" step={0.01} required />
+        <form className="flex flex-col items-center gap-6" action={admin}>
+          <div className="flex">Next Period</div>
+          <input
+            type="number"
+            name="inc"
+            step={0.01}
+            placeholder="growth rate"
+            required
+          />
+          <LoadingButton />
+          <input type="hidden" name="dn" value={password} />
+          <input type="hidden" name="id" value={gameId} />
+          <input type="hidden" name="per" value={gamePeriod} />
+        </form>
+        <form
+          className="flex flex-col items-center gap-6 pt-24"
+          action={endgame}
+        >
+          <div className="flex text-red-500">End Game</div>
+          <input
+            type="number"
+            name="inc"
+            step={0.01}
+            placeholder="growth rate"
+            required
+          />
           <LoadingButton />
           <input type="hidden" name="dn" value={password} />
           <input type="hidden" name="id" value={gameId} />

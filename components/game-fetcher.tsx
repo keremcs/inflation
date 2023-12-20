@@ -16,9 +16,9 @@ export function GameFetcher({
 }) {
   const router = useRouter();
 
-  localStorage.setItem(`demand${player.period - 1}`, player.demand.toFixed(4));
-
   useEffect(() => {
+    localStorage.setItem(`demand${player.period - 1}`, player.demand.toFixed(4));
+  
     const fetchData = async () => {
       const supabase = createBrowserClient<Database>(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
