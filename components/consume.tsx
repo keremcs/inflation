@@ -33,7 +33,7 @@ export default function Consume({
               </span>
             ) : (
               <span className="text-xs sm:text-lg text-red-500">
-                -{inflation}%
+                {inflation}%
               </span>
             ))}
         </div>
