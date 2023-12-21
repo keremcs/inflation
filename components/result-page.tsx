@@ -1,6 +1,7 @@
 "use client";
 
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend } from "recharts";
+import { Button } from "@/components/ui/button";
 
 type Logs = {
   balances: number;
@@ -116,6 +117,10 @@ export default function ResultPage({
           />
         </LineChart>
       </div>
+      <div className="text-2xl py-2">TEDU ERU</div>
+      <Button asChild variant="secondary">
+        <a href="https://sites.google.com/view/erutedu/home">About us</a>
+      </Button>
     </>
   );
 }

@@ -67,14 +67,6 @@ export default async function Home() {
   const fApple = parseFloat(apple.toFixed(2));
   const fBalance = parseFloat(balance.toFixed(2));
 
-  if (gamePeriod > playerPeriod) {
-    return (
-      <main className="min-h-screen flex justify-center items-center text-2xl p-12">
-        <div className="flex">You are late</div>
-      </main>
-    );
-  }
-
   if (!gameActive) {
     const { data: logs, error: logsError } = await supabase
       .from("ilogs")
@@ -87,6 +79,14 @@ export default async function Home() {
     return (
       <main className="min-h-screen flex flex-col justify-center items-center p-12">
         <ResultPage apple={fApple} data={logs} />
+      </main>
+    );
+  }
+
+  if (gamePeriod > playerPeriod) {
+    return (
+      <main className="min-h-screen flex justify-center items-center text-2xl p-12">
+        <div className="flex">You are late</div>
       </main>
     );
   }
