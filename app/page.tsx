@@ -18,14 +18,6 @@ export default async function Home() {
   const header = headers();
   const ip = header.get("x-real-ip") ?? "95.183.240.91"; // header.get("x-forwarded-for")
 
-  if (ip.startsWith("95.183.240")) {
-    return (
-      <main className="min-h-screen flex justify-center items-center text-2xl p-12">
-        <div className="flex">Please use your cellular network</div>
-      </main>
-    );
-  }
-
   const supabase = createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PRIVATE_SUPABASE_SERVICE_ROLE_KEY!,
@@ -87,6 +79,14 @@ export default async function Home() {
     return (
       <main className="min-h-screen flex flex-col justify-center items-center p-12">
         <ResultPage apple={fApple} data={logs} />
+      </main>
+    );
+  }
+
+  if (ip.startsWith("95.183.240")) {
+    return (
+      <main className="min-h-screen flex justify-center items-center text-2xl p-12">
+        <div className="flex text-center">Please use your cellular network</div>
       </main>
     );
   }
