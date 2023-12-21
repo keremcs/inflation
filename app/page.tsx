@@ -16,7 +16,15 @@ const Consume = dynamic(() => import("../components/consume"), {
 
 export default async function Home() {
   const header = headers();
-  const ip = header.get("x-real-ip") ?? "127.0.0.1"; // header.get("x-forwarded-for")
+  const ip = header.get("x-real-ip") ?? "95.183.240.91"; // header.get("x-forwarded-for")
+
+  if (ip.startsWith("95.183.240")) {
+    return (
+      <main className="min-h-screen flex justify-center items-center text-2xl p-12">
+        <div className="flex">Please use your cellular network</div>
+      </main>
+    );
+  }
 
   const supabase = createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
