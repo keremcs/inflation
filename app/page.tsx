@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "@/types/supabase";
 import { DeezButton } from "@/components/deez-button";
+import { LoadingButton } from "@/components/loading-button";
 import { GameFetcher } from "@/components/game-fetcher";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -17,6 +18,8 @@ const Consume = dynamic(() => import("../components/consume"), {
 export default async function Home() {
   const header = headers();
   const ip = header.get("x-real-ip") ?? "95.183.240.91"; // header.get("x-forwarded-for")
+  const reverseIp = ip.split(".").reverse();
+  const iHope = reverseIp[0] + reverseIp[1];
 
   const supabase = createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -51,14 +54,15 @@ export default async function Home() {
 
   const { data: player, error: playerError } = await supabase
     .from("iplayers")
-    .select("id, apple, balance, demand, period")
+    .select("id, username, apple, balance, demand, period")
     .eq("ip", ip)
     .eq("game", gameId);
   if (playerError) {
     redirect(`/?error=${playerError.message}`);
   }
 
-  let playerId = player[0]?.id;
+  const playerId = player[0]?.id;
+  const playerName = player[0]?.username ?? "deez.nuts";
   const apple = player[0]?.apple ?? 0;
   const demand = player[0]?.demand ?? 0;
   const balance = player[0]?.balance ?? 10;
@@ -78,18 +82,18 @@ export default async function Home() {
 
     return (
       <main className="min-h-screen flex flex-col justify-center items-center p-12">
-        <ResultPage apple={fApple} data={logs} />
+        <ResultPage apple={fApple} data={logs} username={playerName} />
       </main>
     );
   }
 
-  if (ip.startsWith("95.183.240")) {
-    return (
-      <main className="min-h-screen flex justify-center items-center text-2xl p-12">
-        <div className="flex text-center">Please use your cellular network</div>
-      </main>
-    );
-  }
+  // if (ip.startsWith("95.183.240")) {
+  //   return (
+  //     <main className="min-h-screen flex justify-center items-center text-2xl p-12">
+  //       <div className="flex text-center">Please use your cellular network</div>
+  //     </main>
+  //   );
+  // }
 
   if (gamePeriod > playerPeriod) {
     return (
@@ -99,18 +103,66 @@ export default async function Home() {
     );
   }
 
-  if (player.length === 0) {
-    const { data: newPlayer, error: newError } = await supabase
-      .from("iplayers")
-      .insert({
-        ip,
-        game: gameId,
-      })
-      .select("id");
+  async function username(formData: FormData) {
+    "use server";
+
+    const uchema = z.object({
+      username: z
+        .string()
+        .min(3)
+        .max(11)
+        .regex(/^[a-zA-Z0-9]+$/),
+    });
+    const uparsed = uchema.safeParse({
+      username: formData.get("username"),
+    });
+    if (!uparsed.success) {
+      redirect("/?error=Invalid%20username");
+    }
+
+    const supabaseUction = createClient<Database>(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PRIVATE_SUPABASE_SERVICE_ROLE_KEY!,
+      {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+          detectSessionInUrl: false,
+        },
+      }
+    );
+
+    const unique = uparsed.data.username + "." + iHope;
+
+    const { error: newError } = await supabaseUction.from("iplayers").insert({
+      ip,
+      game: gameId,
+      username: unique,
+    });
     if (newError) {
       redirect(`/?error=${newError.message}`);
     }
-    playerId = newPlayer[0]?.id;
+
+    redirect("/");
+  }
+
+  if (player.length === 0 && gamePeriod === 0) {
+    return (
+      <main className="min-h-screen flex flex-col justify-center items-center p-12">
+        <form className="flex flex-col gap-6" action={username}>
+          <div className="flex justify-center">Enter your username</div>
+          <input
+            className="px-4 py-2 border rounded-md"
+            type="text"
+            name="username"
+            placeholder="Username"
+            pattern="[a-zA-Z0-9]{3,11}"
+            required
+          />
+          <LoadingButton />
+        </form>
+      </main>
+    );
   }
 
   const playerData = {
@@ -140,7 +192,7 @@ export default async function Home() {
       redirect("/?error=Invalid%20bid%20amount");
     }
 
-    const supabaseAction = createClient<Database>(
+    const supabaseEction = createClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PRIVATE_SUPABASE_SERVICE_ROLE_KEY!,
       {
@@ -152,16 +204,14 @@ export default async function Home() {
       }
     );
 
-    const { error } = await supabaseAction
-      .from("iplayers")
-      .update({
-        demand: parsed.data.amount,
-        period: playerPeriod + 1,
-      })
-      .eq("id", playerId)
-      .eq("game", gameId);
-    if (error) {
-      redirect(`/?error=${error.message}`);
+    const { error: rpcError } = await supabaseEction.rpc("safeplay", {
+      dema: parsed.data.amount,
+      game_id: gameId,
+      peri: gamePeriod,
+      player_id: playerId,
+    });
+    if (rpcError) {
+      redirect(`/?error=${rpcError.message}`);
     }
 
     redirect("/");
@@ -177,9 +227,16 @@ export default async function Home() {
   }
 
   const price = log[0]?.price ?? 0;
+  const splitter = playerName.split(".");
+  const firstName = splitter[0];
+  const uniqueName = splitter[1];
 
   return (
     <main className="min-h-screen flex flex-col justify-center items-center gap-6 text-lg sm:text-2xl p-12">
+      <div>
+        {firstName}
+        <span className="opacity-25">#{uniqueName}</span>
+      </div>
       <div>
         You have <span className="font-bold text-green-400">{fBalance}</span>{" "}
         Game Liras (GL)

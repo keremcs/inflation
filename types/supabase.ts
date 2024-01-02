@@ -41,13 +41,13 @@ export interface Database {
           price: number;
         };
         Insert: {
-          balances?: number;
+          balances: number;
           created_at?: string;
-          expenditure?: number;
+          expenditure: number;
           game: number;
           id?: number;
-          period?: number;
-          price?: number;
+          period: number;
+          price: number;
         };
         Update: {
           balances?: number;
@@ -78,6 +78,7 @@ export interface Database {
           id: number;
           ip: string;
           period: number;
+          username: string | null;
         };
         Insert: {
           apple?: number;
@@ -88,6 +89,7 @@ export interface Database {
           id?: number;
           ip?: string;
           period?: number;
+          username?: string | null;
         };
         Update: {
           apple?: number;
@@ -98,6 +100,7 @@ export interface Database {
           id?: number;
           ip?: string;
           period?: number;
+          username?: string | null;
         };
         Relationships: [
           {
@@ -119,6 +122,15 @@ export interface Database {
           game_id: number;
           income: number;
           perio: number;
+        };
+        Returns: undefined;
+      };
+      safeplay: {
+        Args: {
+          game_id: number;
+          player_id: number;
+          peri: number;
+          dema: number;
         };
         Returns: undefined;
       };

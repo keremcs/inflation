@@ -123,12 +123,33 @@ export default async function Admin() {
     const isActive = game[0].active;
     const gamePeriod = game[0].period;
 
+    const { data: won, error: appleError } = await supabase
+      .from("iplayers")
+      .select("username")
+      .eq("game", gameId)
+      .order("apple", { ascending: false })
+      .limit(1);
+    if (appleError) {
+      redirect(`/admin?error=${appleError.message}`);
+    }
+
+    const winner = won[0]?.username ?? "error.error";
+    const splitter = winner.split(".");
+    const firstName = splitter[0];
+    const uniqueName = splitter[1];
+
     return (
       <main className="min-h-screen flex flex-col justify-center items-center text-2xl gap-6 p-12">
         {isActive ? (
           <span className="text-green-500">Game is active</span>
         ) : (
-          <span className="text-red-500">Game Ended</span>
+          <>
+            <div>
+              Winner is {firstName}
+              <span className="opacity-25">#{uniqueName}</span>
+            </div>
+            <span className="text-red-500">Game Ended</span>
+          </>
         )}
         <div>Game: {gameId}</div>
         <div>Period: {gamePeriod}</div>

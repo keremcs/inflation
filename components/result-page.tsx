@@ -13,9 +13,11 @@ type Logs = {
 export default function ResultPage({
   apple,
   data,
+  username,
 }: {
   apple: number;
   data: Logs;
+  username: string;
 }) {
   const plain = data.map((item) => {
     return {
@@ -48,8 +50,16 @@ export default function ResultPage({
     };
   });
 
+  const splitter = username.split(".");
+  const firstName = splitter[0];
+  const uniqueName = splitter[1];
+
   return (
     <>
+      <div>
+        {firstName}
+        <span className="opacity-25">#{uniqueName}</span>
+      </div>
       {apple > 0 && (
         <div className="flex gap-1">
           Your total apple consumption:
