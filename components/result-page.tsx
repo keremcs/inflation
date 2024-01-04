@@ -56,15 +56,17 @@ export default function ResultPage({
 
   return (
     <>
-      <div>
-        {firstName}
-        <span className="opacity-25">#{uniqueName}</span>
-      </div>
       {apple > 0 && (
-        <div className="flex gap-1">
-          Your total apple consumption:
-          <span className="text-red-500">{apple}</span> kg
-        </div>
+        <>
+          <div>
+            {firstName}
+            <span className="opacity-25">#{uniqueName}</span>
+          </div>
+          <div className="flex gap-1">
+            Your total apple consumption:
+            <span className="text-red-500">{apple}</span> kg
+          </div>
+        </>
       )}
       <div className="flex flex-wrap justify-center gap-16 scale-75 sm:scale-100">
         <LineChart
