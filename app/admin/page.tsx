@@ -2,9 +2,14 @@ import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "@/types/supabase";
 import { LoadingButton } from "@/components/loading-button";
+import { Input } from "@/components/ui/input";
 import { redirect } from "next/navigation";
 
-export default async function Admin() {
+export default async function Admin({
+  searchParams,
+}: {
+  searchParams: { error: string; message: string };
+}) {
   const password = cookies().get("adminpw")?.value;
 
   async function setCookie(formData: FormData) {
@@ -48,7 +53,7 @@ export default async function Admin() {
       redirect(`/admin?error=${rpcError.message}`);
     }
 
-    redirect("/admin");
+    redirect(`/admin?message=Period%20${per + 1}%20started%20successfully`);
   }
 
   async function endgame(formData: FormData) {
@@ -93,7 +98,7 @@ export default async function Admin() {
       redirect(`/admin?error=${rpcError.message}`);
     }
 
-    redirect("/admin");
+    redirect("/admin?message=Game%20ended%20successfully");
   }
 
   if (password === process.env.NEXT_PRIVATE_ADMIN_PASSWORD) {
@@ -155,7 +160,7 @@ export default async function Admin() {
         <div>Period: {gamePeriod}</div>
         <form className="flex flex-col items-center gap-6" action={admin}>
           <div className="flex">Next Period</div>
-          <input
+          <Input
             type="number"
             name="inc"
             step={0.01}
@@ -167,12 +172,18 @@ export default async function Admin() {
           <input type="hidden" name="id" value={gameId} />
           <input type="hidden" name="per" value={gamePeriod} />
         </form>
+        {searchParams?.message && (
+          <span className="text-green-500">{searchParams.message}</span>
+        )}
+        {searchParams?.error && (
+          <span className="text-red-500">{searchParams.error}</span>
+        )}
         <form
           className="flex flex-col items-center gap-6 pt-24"
           action={endgame}
         >
           <div className="flex text-red-500">End Game</div>
-          <input
+          <Input
             type="number"
             name="inc"
             step={0.01}
@@ -191,7 +202,7 @@ export default async function Admin() {
   return (
     <main className="min-h-screen flex justify-center items-center text-2xl p-12">
       <form className="flex flex-wrap justify-center gap-6" action={setCookie}>
-        <input type="password" name="adminpw" placeholder="Password" />
+        <Input type="password" name="adminpw" placeholder="Password" />
         <LoadingButton />
       </form>
     </main>

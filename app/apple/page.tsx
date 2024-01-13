@@ -4,6 +4,7 @@ import { Database } from "@/types/supabase";
 import { DeezButton } from "@/components/deez-button";
 import { LoadingButton } from "@/components/loading-button";
 import { GameFetcher } from "@/components/game-fetcher";
+import { Input } from "@/components/ui/input";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import Hamburger from "@/components/hamburger";
@@ -94,7 +95,6 @@ export default async function Apple() {
             <div className="flex w-[90px] justify-end"></div>
           </div>
         </div>
-
         <div className="flex flex-col grow justify-center items-center p-12">
           <ResultPage apple={fApple} data={logs} username={playerName} />
         </div>
@@ -166,8 +166,7 @@ export default async function Apple() {
       <main className="min-h-screen flex flex-col justify-center items-center p-12">
         <form className="flex flex-col gap-6" action={username}>
           <div className="flex justify-center">Enter your username</div>
-          <input
-            className="px-4 py-2 border rounded-md"
+          <Input
             type="text"
             name="username"
             placeholder="Username"
