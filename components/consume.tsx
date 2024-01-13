@@ -16,7 +16,7 @@ export default function Consume({
   }, [period, price]);
 
   if (period > 0) {
-    const consumed = localStorage.getItem(`demand${period - 1}`);
+    const consumed = localStorage.getItem(`demand${period - 1}`) ?? "0";
     const pasti = localStorage.getItem(`price${period - 2}`) ?? "0";
     const inflation = parseFloat(
       ((price / parseFloat(pasti) - 1) * 100).toFixed(1)

@@ -110,7 +110,7 @@ export default async function Apple() {
   //   );
   // }
 
-  if (gamePeriod > playerPeriod) {
+  if (player.length === 0 && gamePeriod > 0) {
     return (
       <main className="min-h-screen flex justify-center items-center text-2xl p-12">
         <div className="flex">You are late</div>

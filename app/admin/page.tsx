@@ -201,7 +201,7 @@ export default async function Admin({
 
   return (
     <main className="min-h-screen flex justify-center items-center text-2xl p-12">
-      <form className="flex flex-wrap justify-center gap-6" action={setCookie}>
+      <form className="flex flex-col justify-center gap-6" action={setCookie}>
         <Input type="password" name="adminpw" placeholder="Password" />
         <LoadingButton />
       </form>
