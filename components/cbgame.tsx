@@ -484,7 +484,7 @@ function Game(props: { mg: boolean }) {
                       "🎉 Best Score!"
                     ) : (
                       <span className="flex items-center text-base">
-                        ({parseFloat(((score / bestScore) * 100).toFixed(4))}%)
+                        ({parseFloat(((score / bestScore) * 100).toFixed(1))}%)
                       </span>
                     )}
                   </span>

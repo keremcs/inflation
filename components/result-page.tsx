@@ -30,8 +30,6 @@ export default function ResultPage({
     };
   });
 
-  console.log(plain);
-
   const growth = plain.map((item, index) => {
     if (index === 0) {
       return {
