@@ -16,7 +16,7 @@ export default function Hamburger() {
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          className="min-w-[180px] rounded-b-md p-[5px] bg-secondary"
+          className="min-w-[200px] rounded-b-md p-[5px] bg-secondary"
           sideOffset={11}
         >
           <DropdownMenu.Label className="pl-[10px] select-none text-xs font-bold leading-[25px]">
