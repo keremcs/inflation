@@ -35,7 +35,7 @@ export default function Hamburger() {
             className="group leading-none rounded-[3px] flex items-center h-[35px] px-[5px] relative pl-[10px] select-none outline-none data-[highlighted]:bg-primary data-[highlighted]:text-secondary"
           >
             <a href="/apple" className="justify-between">
-              Apple <Apple className="h-4 w-4" />
+              Velocity of Money <Apple className="h-4 w-4" />
             </a>
           </DropdownMenu.Item>
           <DropdownMenu.Separator className="h-[1px] bg-primary m-[5px]" />
