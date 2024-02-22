@@ -259,7 +259,7 @@ function Game(props: { mg: boolean }) {
       {period === 1 && (
         <>
           <DataTable
-            version={props.mg ? "Money Growth" : "Nominal Interest Rate"}
+            version={props.mg ? "Money Growth" : "Interest Rate"}
             p={period}
             i0={inflation0}
             r0={props.mg ? inflation0 : rate0}
@@ -317,7 +317,7 @@ function Game(props: { mg: boolean }) {
       {period === 2 && (
         <>
           <DataTable
-            version={props.mg ? "Money Growth" : "Nominal Interest Rate"}
+            version={props.mg ? "Money Growth" : "Interest Rate"}
             p={period}
             i0={inflation0}
             i1={inflation1}
@@ -370,7 +370,7 @@ function Game(props: { mg: boolean }) {
       {period === 3 && (
         <>
           <DataTable
-            version={props.mg ? "Money Growth" : "Nominal Interest Rate"}
+            version={props.mg ? "Money Growth" : "Interest Rate"}
             p={period}
             i0={inflation0}
             i1={inflation1}
@@ -426,7 +426,7 @@ function Game(props: { mg: boolean }) {
       {period === 4 && (
         <>
           <DataTable
-            version={props.mg ? "Money Growth" : "Nominal Interest Rate"}
+            version={props.mg ? "Money Growth" : "Interest Rate"}
             p={period}
             i0={inflation0}
             i1={inflation1}
