@@ -84,7 +84,7 @@ function DataTable(props: {
 }) {
   return (
     <div className="flex px-6">
-      <table className="table-auto border text-xs text-center sm:text-xl md:text-2xl">
+      <table className="table-auto border text-center sm:text-xl md:text-2xl">
         <thead>
           <tr>
             <th className="p-3">Period</th>
@@ -224,30 +224,32 @@ function Game(props: { mg: boolean }) {
       5 * res4.tog;
     setBestScore(findBestScore);
 
-    const history: {
-      games: number;
-      streak: number;
-      average: number;
-      maxScore: number;
-    } = JSON.parse(
-      localStorage.getItem("stats") ??
-        JSON.stringify({
-          games: 0,
-          streak: 0,
-          average: 0,
-          maxScore: 0,
-        })
-    );
-    const wizard = {
-      games: history.games + 1,
-      streak: min0 / findBestScore >= 1 ? history.streak + 1 : 0,
-      average:
-        (history.average * history.games + min0 / findBestScore) /
-        (history.games + 1),
-      maxScore: min0 > history.maxScore ? min0 : history.maxScore,
-    };
-    setGameHistory(wizard);
-    localStorage.setItem("stats", JSON.stringify(wizard));
+    if (!props.mg) {
+      const history: {
+        games: number;
+        streak: number;
+        average: number;
+        maxScore: number;
+      } = JSON.parse(
+        localStorage.getItem("stats") ??
+          JSON.stringify({
+            games: 0,
+            streak: 0,
+            average: 0,
+            maxScore: 0,
+          })
+      );
+      const wizard = {
+        games: history.games + 1,
+        streak: min0 / findBestScore >= 1 ? history.streak + 1 : 0,
+        average:
+          (history.average * history.games + min0 / findBestScore) /
+          (history.games + 1),
+        maxScore: min0 > history.maxScore ? min0 : history.maxScore,
+      };
+      setGameHistory(wizard);
+      localStorage.setItem("stats", JSON.stringify(wizard));
+    }
 
     return setPeriod(5);
   };
@@ -264,11 +266,11 @@ function Game(props: { mg: boolean }) {
             o0={og0}
           />
           {!props.mg && (
-            <div className="text-xs">
+            <div className="italic">
               Neutral real rate is assumed to be 1 per cent
             </div>
           )}
-          <div className="text-xs">Inflation target is 2 per cent</div>
+          <div className="italic">Inflation target is 2 per cent</div>
           <Button variant="secondary" onClick={props.mg ? mgRandom : iRandom}>
             <div className="mr-2">🎲</div> initial conditions
           </Button>
@@ -483,7 +485,7 @@ function Game(props: { mg: boolean }) {
       {period === 5 && (
         <>
           <DataTable
-            version={props.mg ? "Money Growth" : "Nominal Interest Rate"}
+            version={props.mg ? "Money Growth" : "Interest Rate"}
             p={period}
             i0={inflation0}
             i1={inflation1}
@@ -526,8 +528,8 @@ function Game(props: { mg: boolean }) {
               </div>
             )}
           </div>
-          {gameHistory && (
-            <div className="flex text-xs sm:text-base gap-3">
+          {!props.mg && gameHistory && (
+            <div className="flex text-center gap-3 px-3">
               <div className="flex flex-col items-center">
                 <div className="flex">Total Games</div>
                 <div className="flex text-xl sm:text-2xl">
@@ -547,7 +549,7 @@ function Game(props: { mg: boolean }) {
                 </div>
               </div>
               <div className="flex flex-col items-center">
-                <div className="flex">Streak</div>
+                <div className="flex">Win Streak</div>
                 <div className="flex text-xl sm:text-2xl">
                   {gameHistory.streak}
                 </div>
