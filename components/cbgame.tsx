@@ -266,11 +266,11 @@ function Game(props: { mg: boolean }) {
             o0={og0}
           />
           {!props.mg && (
-            <div className="italic">
+            <div className="text-xs">
               Neutral real rate is assumed to be 1 per cent
             </div>
           )}
-          <div className="italic">Inflation target is 2 per cent</div>
+          <div className="text-xs">Inflation target is 2 per cent</div>
           <Button variant="secondary" onClick={props.mg ? mgRandom : iRandom}>
             <div className="mr-2">🎲</div> initial conditions
           </Button>
@@ -529,7 +529,7 @@ function Game(props: { mg: boolean }) {
             )}
           </div>
           {!props.mg && gameHistory && (
-            <div className="flex text-center gap-3 px-3">
+            <div className="flex text-xs sm:text-base gap-3 px-3">
               <div className="flex flex-col items-center">
                 <div className="flex">Total Games</div>
                 <div className="flex text-xl sm:text-2xl">
