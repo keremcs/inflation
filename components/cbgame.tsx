@@ -157,6 +157,12 @@ function Game(props: { mg: boolean }) {
   const [rate4, setRate4] = useState<number>(0);
   const [score, setScore] = useState<number>(7);
   const [bestScore, setBestScore] = useState<number>(7);
+  const [gameHistory, setGameHistory] = useState<{
+    games: number;
+    streak: number;
+    average: number;
+    maxScore: number;
+  }>();
 
   const iRandom = () => {
     const rand = parseFloat((Math.random() * 10).toFixed(2));
@@ -200,7 +206,6 @@ function Game(props: { mg: boolean }) {
       5 * og3 +
       5 * og;
     const min0 = calc < 0 ? 0 : calc;
-    const done = parseFloat(min0.toFixed(2));
     setScore(min0);
 
     const res1 = irFormula(2 * inflation0 - 1, inflation0);
@@ -218,6 +223,31 @@ function Game(props: { mg: boolean }) {
       5 * res3.tog +
       5 * res4.tog;
     setBestScore(findBestScore);
+
+    const history: {
+      games: number;
+      streak: number;
+      average: number;
+      maxScore: number;
+    } = JSON.parse(
+      localStorage.getItem("stats") ??
+        JSON.stringify({
+          games: 0,
+          streak: 0,
+          average: 0,
+          maxScore: 0,
+        })
+    );
+    const wizard = {
+      games: history.games + 1,
+      streak: min0 / findBestScore >= 1 ? history.streak + 1 : 0,
+      average:
+        (history.average * history.games + min0 / findBestScore) /
+        (history.games + 1),
+      maxScore: min0 > history.maxScore ? min0 : history.maxScore,
+    };
+    setGameHistory(wizard);
+    localStorage.setItem("stats", JSON.stringify(wizard));
 
     return setPeriod(5);
   };
@@ -471,7 +501,7 @@ function Game(props: { mg: boolean }) {
             r3={rate3}
             r4={rate4}
           />
-          <div className="break-all text-4xl text-center font-bold">
+          <div className="break-all text-2xl sm:text-4xl text-center font-bold">
             {score > 0 ? (
               <div className="flex flex-row gap-2">
                 Score:
@@ -496,6 +526,34 @@ function Game(props: { mg: boolean }) {
               </div>
             )}
           </div>
+          {gameHistory && (
+            <div className="flex text-xs sm:text-base gap-3">
+              <div className="flex flex-col items-center">
+                <div className="flex">Total Games</div>
+                <div className="flex text-xl sm:text-2xl">
+                  {gameHistory.games}
+                </div>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="flex">Total Performance</div>
+                <div className="flex text-xl sm:text-2xl">
+                  {(gameHistory.average * 100).toFixed(1)}%
+                </div>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="flex">Maximum Score</div>
+                <div className="flex text-xl sm:text-2xl">
+                  {gameHistory.maxScore.toFixed(2)}
+                </div>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="flex">Streak</div>
+                <div className="flex text-xl sm:text-2xl">
+                  {gameHistory.streak}
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>
