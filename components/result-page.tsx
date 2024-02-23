@@ -131,7 +131,9 @@ export default function ResultPage({
       </div>
       <div className="text-2xl py-2">TEDU ERU</div>
       <Button asChild variant="secondary">
-        <a href="https://sites.google.com/view/erutedu/home">About us</a>
+        <a href="https://sites.google.com/view/erutedu/home" target="_blank">
+          About us
+        </a>
       </Button>
     </>
   );

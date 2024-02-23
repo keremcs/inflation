@@ -5,6 +5,7 @@ import { DeezButton } from "@/components/deez-button";
 import { LoadingButton } from "@/components/loading-button";
 import { PublicFetcher } from "@/components/public-fetcher";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import Hamburger from "@/components/hamburger";
@@ -63,10 +64,21 @@ export default async function Public() {
   const playerPeriod = player[0]?.period ?? 0;
   const playerName = player[0]?.username ?? "deez.nuts";
 
+  const splitter = playerName.split(".");
+  const firstName = splitter[0];
+  const uniqueName = splitter[1];
+
   const fBalance = parseFloat(balance.toFixed(2));
   const fContri = parseFloat(contri.toFixed(2));
 
   if (!gameActive) {
+    const { data: winners } = await supabase
+      .from("players")
+      .select("balance, username")
+      .eq("game", gameId)
+      .order("balance", { ascending: false })
+      .limit(5);
+
     return (
       <main className="min-h-screen flex flex-col">
         <div className="flex flex-row justify-center border-b h-[57px]">
@@ -80,8 +92,54 @@ export default async function Public() {
             <div className="flex w-[90px] justify-end"></div>
           </div>
         </div>
-        <div className="flex flex-col grow justify-center items-center p-12">
-          DN
+        <div className="flex flex-col grow justify-center items-center gap-6 p-12">
+          <div className="flex flex-col items-center text-2xl">
+            <div>
+              {firstName}
+              <span className="opacity-25">#{uniqueName}</span>
+            </div>
+            <div className="flex gap-1">
+              Your balance:
+              <span className="text-green-500">{fBalance}</span> GL
+            </div>
+          </div>
+          {winners && (
+            <div className="flex flex-col items-center gap-3">
+              <div className="flex text-2xl">Leaderboard</div>
+              <ul className="flex flex-col gap-3">
+                {winners.map((winner, index) => (
+                  <li
+                    key={winner.username}
+                    className="flex justify-between gap-3"
+                  >
+                    <div>
+                      {index + 1}. {winner.username.split(".")[0]}
+                      <span className="opacity-25">
+                        #{winner.username.split(".")[1]}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-green-500">
+                        {winner.balance.toFixed(0)}
+                      </span>{" "}
+                      GL
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <div className="flex flex-col">
+            <div className="text-2xl py-2">TEDU ERU</div>
+            <Button asChild variant="secondary">
+              <a
+                href="https://sites.google.com/view/erutedu/home"
+                target="_blank"
+              >
+                About us
+              </a>
+            </Button>
+          </div>
         </div>
       </main>
     );
@@ -215,10 +273,6 @@ export default async function Public() {
 
     redirect("/public");
   }
-
-  const splitter = playerName.split(".");
-  const firstName = splitter[0];
-  const uniqueName = splitter[1];
 
   return (
     <main className="min-h-screen flex flex-col justify-center items-center gap-6 text-lg sm:text-2xl p-12">
