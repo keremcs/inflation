@@ -18,7 +18,7 @@ export default async function Admin({
     const yummy = String(formData.get("adminpw"));
     cookies().set("adminpw", yummy);
 
-    redirect("/admin");
+    redirect("/public/admin");
   }
 
   async function admin(formData: FormData) {
@@ -26,7 +26,7 @@ export default async function Admin({
 
     const pw = String(formData.get("dn"));
     if (pw !== process.env.NEXT_PRIVATE_ADMIN_PASSWORD) {
-      redirect("/admin?error=Wrong%20password");
+      redirect("/public/admin?error=Wrong%20password");
     }
 
     const supabaseAction = createClient<Database>(
@@ -43,17 +43,17 @@ export default async function Admin({
 
     const id = Number(formData.get("id"));
     const per = Number(formData.get("per"));
-    const inc = Number(formData.get("inc"));
-    const { error: rpcError } = await supabaseAction.rpc("magic", {
+    const { error: rpcError } = await supabaseAction.rpc("goods", {
       game_id: id,
-      income: inc,
       perio: per,
     });
     if (rpcError) {
-      redirect(`/admin?error=${rpcError.message}`);
+      redirect(`/public/admin?error=${rpcError.message}`);
     }
 
-    redirect(`/admin?message=Period%20${per + 1}%20started%20successfully`);
+    redirect(
+      `/public/admin?message=Period%20${per + 1}%20started%20successfully`
+    );
   }
 
   async function endgame(formData: FormData) {
@@ -61,7 +61,7 @@ export default async function Admin({
 
     const pw = String(formData.get("dn"));
     if (pw !== process.env.NEXT_PRIVATE_ADMIN_PASSWORD) {
-      redirect("/admin?error=Wrong%20password");
+      redirect("/public/admin?error=Wrong%20password");
     }
 
     const supabaseAction = createClient<Database>(
@@ -78,27 +78,25 @@ export default async function Admin({
 
     const id = Number(formData.get("id"));
     const { error } = await supabaseAction
-      .from("igames")
+      .from("games")
       .update({
         active: false,
       })
       .eq("id", id);
     if (error) {
-      redirect(`/admin?error=${error.message}`);
+      redirect(`/public/admin?error=${error.message}`);
     }
 
     const per = Number(formData.get("per"));
-    const inc = Number(formData.get("inc"));
-    const { error: rpcError } = await supabaseAction.rpc("magic", {
+    const { error: rpcError } = await supabaseAction.rpc("goods", {
       game_id: id,
-      income: inc,
       perio: per,
     });
     if (rpcError) {
-      redirect(`/admin?error=${rpcError.message}`);
+      redirect(`/public/admin?error=${rpcError.message}`);
     }
 
-    redirect("/admin?message=Game%20ended%20successfully");
+    redirect("/public/admin?message=Game%20ended%20successfully");
   }
 
   if (password === process.env.NEXT_PRIVATE_ADMIN_PASSWORD) {
@@ -115,13 +113,13 @@ export default async function Admin({
     );
 
     const { data: game, error: gameError } = await supabase
-      .from("igames")
+      .from("games")
       .select("id, active, period");
     if (gameError) {
-      redirect(`/admin?error=${gameError.message}`);
+      redirect(`/public/admin?error=${gameError.message}`);
     }
     if (game.length === 0) {
-      redirect("/admin?error=Game%20not%20found");
+      redirect("/public/admin?error=Game%20not%20found");
     }
 
     const gameId = game[0].id;
@@ -129,13 +127,13 @@ export default async function Admin({
     const gamePeriod = game[0].period;
 
     const { data: won, error: appleError } = await supabase
-      .from("iplayers")
+      .from("players")
       .select("username")
       .eq("game", gameId)
-      .order("apple", { ascending: false })
+      .order("balance", { ascending: false })
       .limit(1);
     if (appleError) {
-      redirect(`/admin?error=${appleError.message}`);
+      redirect(`/public/admin?error=${appleError.message}`);
     }
 
     const winner = won[0]?.username ?? "error.error";
@@ -145,6 +143,9 @@ export default async function Admin({
 
     return (
       <main className="min-h-screen flex flex-col justify-center items-center text-2xl gap-6 p-12">
+        <div className="flex text-center text-4xl">
+          Public Goods Admin Panel
+        </div>
         {isActive ? (
           <span className="text-green-500">Game is active</span>
         ) : (
@@ -160,36 +161,24 @@ export default async function Admin({
         <div>Period: {gamePeriod}</div>
         <form className="flex flex-col items-center gap-6" action={admin}>
           <div className="flex">Next Period</div>
-          <Input
-            type="number"
-            name="inc"
-            step={0.01}
-            placeholder="growth rate"
-            required
-          />
           <LoadingButton />
           <input type="hidden" name="dn" value={password} />
           <input type="hidden" name="id" value={gameId} />
           <input type="hidden" name="per" value={gamePeriod} />
         </form>
         {searchParams?.message && (
-          <span className="text-green-500">{searchParams.message}</span>
+          <span className="text-center text-green-500">
+            {searchParams.message}
+          </span>
         )}
         {searchParams?.error && (
-          <span className="text-red-500">{searchParams.error}</span>
+          <span className="text-center text-red-500">{searchParams.error}</span>
         )}
         <form
           className="flex flex-col items-center gap-6 pt-24"
           action={endgame}
         >
           <div className="flex text-red-500">End Game</div>
-          <Input
-            type="number"
-            name="inc"
-            step={0.01}
-            placeholder="growth rate"
-            required
-          />
           <LoadingButton />
           <input type="hidden" name="dn" value={password} />
           <input type="hidden" name="id" value={gameId} />

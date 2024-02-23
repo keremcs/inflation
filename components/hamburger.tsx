@@ -1,7 +1,7 @@
 "use client";
 
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Menu, Landmark, Apple } from "lucide-react";
+import { Menu, Landmark, Apple, Users2 } from "lucide-react";
 
 export default function Hamburger() {
   return (
@@ -28,6 +28,14 @@ export default function Hamburger() {
           >
             <a href="/" className="justify-between">
               Central Banking <Landmark className="h-4 w-4" />
+            </a>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            asChild
+            className="group leading-none rounded-[3px] flex items-center h-[35px] px-[5px] relative pl-[10px] select-none outline-none data-[highlighted]:bg-primary data-[highlighted]:text-secondary"
+          >
+            <a href="/public" className="justify-between">
+              Public Goods <Users2 className="h-4 w-4" />
             </a>
           </DropdownMenu.Item>
           <DropdownMenu.Item

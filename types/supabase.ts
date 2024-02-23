@@ -6,9 +6,30 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
+      games: {
+        Row: {
+          active: boolean;
+          created_at: string;
+          id: number;
+          period: number;
+        };
+        Insert: {
+          active?: boolean;
+          created_at?: string;
+          id?: number;
+          period?: number;
+        };
+        Update: {
+          active?: boolean;
+          created_at?: string;
+          id?: number;
+          period?: number;
+        };
+        Relationships: [];
+      };
       igames: {
         Row: {
           active: boolean;
@@ -112,16 +133,88 @@ export interface Database {
           }
         ];
       };
+      players: {
+        Row: {
+          balance: number;
+          contri: number;
+          created_at: string;
+          game: number;
+          id: number;
+          ip: string;
+          period: number;
+          username: string;
+        };
+        Insert: {
+          balance?: number;
+          contri?: number;
+          created_at?: string;
+          game: number;
+          id?: number;
+          ip?: string;
+          period?: number;
+          username?: string;
+        };
+        Update: {
+          balance?: number;
+          contri?: number;
+          created_at?: string;
+          game?: number;
+          id?: number;
+          ip?: string;
+          period?: number;
+          username?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "public_players_game_fkey";
+            columns: ["game"];
+            isOneToOne: false;
+            referencedRelation: "games";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
+      addpool: {
+        Args: {
+          amount: number;
+          game_id: number;
+          perio: number;
+        };
+        Returns: undefined;
+      };
+      goods: {
+        Args: {
+          game_id: number;
+          perio: number;
+        };
+        Returns: undefined;
+      };
       magic: {
         Args: {
           game_id: number;
           income: number;
           perio: number;
+        };
+        Returns: undefined;
+      };
+      poolfn: {
+        Args: {
+          amount: number;
+          game_id: number;
+        };
+        Returns: undefined;
+      };
+      publicg: {
+        Args: {
+          cont: number;
+          game_id: number;
+          peri: number;
+          player_id: number;
         };
         Returns: undefined;
       };
@@ -142,7 +235,7 @@ export interface Database {
       [_ in never]: never;
     };
   };
-}
+};
 
 export type Tables<
   PublicTableNameOrOptions extends
