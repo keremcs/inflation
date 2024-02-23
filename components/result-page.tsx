@@ -10,15 +10,7 @@ type Logs = {
   price: number;
 }[];
 
-export default function ResultPage({
-  apple,
-  data,
-  username,
-}: {
-  apple: number;
-  data: Logs;
-  username: string;
-}) {
+export default function ResultPage({ data }: { data: Logs }) {
   const plain = data.map((item) => {
     return {
       period: item.period,
@@ -50,28 +42,12 @@ export default function ResultPage({
     };
   });
 
-  const splitter = username.split(".");
-  const firstName = splitter[0];
-  const uniqueName = splitter[1];
-
   return (
     <>
-      {apple > 0 && (
-        <>
-          <div>
-            {firstName}
-            <span className="opacity-25">#{uniqueName}</span>
-          </div>
-          <div className="flex gap-1">
-            Your total apple consumption:
-            <span className="text-red-500">{apple}</span> kg
-          </div>
-        </>
-      )}
-      <div className="flex flex-wrap justify-center gap-16 scale-75 sm:scale-100">
+      <div className="flex flex-wrap justify-center gap-3 sm:gap-16">
         <LineChart
-          width={400}
-          height={400}
+          width={350}
+          height={350}
           data={growth}
           margin={{
             top: 20,
@@ -103,8 +79,8 @@ export default function ResultPage({
           />
         </LineChart>
         <LineChart
-          width={400}
-          height={400}
+          width={350}
+          height={350}
           data={plain}
           margin={{
             top: 20,
@@ -129,12 +105,14 @@ export default function ResultPage({
           />
         </LineChart>
       </div>
-      <div className="text-2xl py-2">TEDU ERU</div>
-      <Button asChild variant="secondary">
-        <a href="https://sites.google.com/view/erutedu/home" target="_blank">
-          About us
-        </a>
-      </Button>
+      <div className="flex flex-col">
+        <div className="text-2xl py-2">TEDU ERU</div>
+        <Button asChild variant="secondary">
+          <a href="https://sites.google.com/view/erutedu/home" target="_blank">
+            About us
+          </a>
+        </Button>
+      </div>
     </>
   );
 }

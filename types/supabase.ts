@@ -99,7 +99,7 @@ export type Database = {
           id: number;
           ip: string;
           period: number;
-          username: string | null;
+          username: string;
         };
         Insert: {
           apple?: number;
@@ -110,7 +110,7 @@ export type Database = {
           id?: number;
           ip?: string;
           period?: number;
-          username?: string | null;
+          username?: string;
         };
         Update: {
           apple?: number;
@@ -121,7 +121,7 @@ export type Database = {
           id?: number;
           ip?: string;
           period?: number;
-          username?: string | null;
+          username?: string;
         };
         Relationships: [
           {

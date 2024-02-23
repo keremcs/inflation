@@ -65,6 +65,9 @@ export default async function Apple() {
 
   const playerId = player[0]?.id;
   const playerName = player[0]?.username ?? "deez.nuts";
+  const splitter = playerName.split(".");
+  const firstName = splitter[0];
+  const uniqueName = splitter[1];
   const apple = player[0]?.apple ?? 0;
   const demand = player[0]?.demand ?? 0;
   const balance = player[0]?.balance ?? 10;
@@ -82,6 +85,13 @@ export default async function Apple() {
       redirect(`/apple?error=${logsError.message}`);
     }
 
+    const { data: winners } = await supabase
+      .from("iplayers")
+      .select("apple, username")
+      .eq("game", gameId)
+      .order("apple", { ascending: false })
+      .limit(5);
+
     return (
       <main className="min-h-screen flex flex-col">
         <div className="flex flex-row justify-center border-b h-[57px]">
@@ -95,8 +105,46 @@ export default async function Apple() {
             <div className="flex w-[90px] justify-end"></div>
           </div>
         </div>
-        <div className="flex flex-col grow justify-center items-center p-12">
-          <ResultPage apple={fApple} data={logs} username={playerName} />
+        <div className="flex flex-col grow justify-center items-center gap-3 p-12">
+          {fApple > 0 && (
+            <>
+              <div className="text-2xl">
+                {firstName}
+                <span className="opacity-25">#{uniqueName}</span>
+              </div>
+              <div className="flex items-center text-sm gap-1">
+                Your total apple consumption:
+                <span className="text-red-500">{fApple}</span> kg
+              </div>
+            </>
+          )}
+          {winners && (
+            <div className="flex flex-col items-center gap-3">
+              <div className="flex text-2xl">Leaderboard</div>
+              <ul className="flex flex-col text-sm gap-3">
+                {winners.map((winner, index) => (
+                  <li
+                    key={winner.username}
+                    className="flex justify-between gap-3"
+                  >
+                    <div>
+                      {index + 1}. {winner.username.split(".")[0]}
+                      <span className="opacity-25">
+                        #{winner.username.split(".")[1]}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-red-500">
+                        {winner.apple.toFixed(2)}
+                      </span>{" "}
+                      kg
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <ResultPage data={logs} />
         </div>
       </main>
     );
@@ -241,9 +289,6 @@ export default async function Apple() {
   }
 
   const price = log[0]?.price ?? 0;
-  const splitter = playerName.split(".");
-  const firstName = splitter[0];
-  const uniqueName = splitter[1];
 
   return (
     <main className="min-h-screen flex flex-col justify-center items-center gap-6 text-lg sm:text-2xl p-12">
