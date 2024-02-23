@@ -93,16 +93,18 @@ export default async function Public() {
           </div>
         </div>
         <div className="flex flex-col grow justify-center items-center gap-6 p-12">
-          <div className="flex flex-col items-center text-2xl">
-            <div>
-              {firstName}
-              <span className="opacity-25">#{uniqueName}</span>
+          {playerPeriod > 0 && (
+            <div className="flex flex-col items-center text-2xl">
+              <div>
+                {firstName}
+                <span className="opacity-25">#{uniqueName}</span>
+              </div>
+              <div className="flex gap-1">
+                Your balance:
+                <span className="text-green-500">{fBalance}</span> GL
+              </div>
             </div>
-            <div className="flex gap-1">
-              Your balance:
-              <span className="text-green-500">{fBalance}</span> GL
-            </div>
-          </div>
+          )}
           {winners && (
             <div className="flex flex-col items-center gap-3">
               <div className="flex text-2xl">Leaderboard</div>
