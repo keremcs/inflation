@@ -84,7 +84,7 @@ function DataTable(props: {
 }) {
   return (
     <div className="flex px-6">
-      <table className="table-auto border text-center sm:text-xl md:text-2xl">
+      <table className="table-auto border text-center text-xs sm:text-xl md:text-2xl">
         <thead>
           <tr>
             <th className="p-3">Period</th>
@@ -277,7 +277,7 @@ function Game(props: { mg: boolean }) {
           <div className="text-red-500 md:text-2xl">
             Your rate decision: {rate1}%
           </div>
-          <div className="flex flex-row gap-3 max-w-[182px]">
+          <div className="flex flex-row gap-3 max-w-[190px]">
             <Input
               id="r1"
               placeholder="Enter rate"
@@ -329,7 +329,7 @@ function Game(props: { mg: boolean }) {
           <div className="text-red-500 md:text-2xl">
             Your rate decision: {rate2}%
           </div>
-          <div className="flex flex-row gap-3 max-w-[182px]">
+          <div className="flex flex-row gap-3 max-w-[190px]">
             <Input
               id="r2"
               placeholder="Enter rate"
@@ -385,7 +385,7 @@ function Game(props: { mg: boolean }) {
           <div className="text-red-500 md:text-2xl">
             Your rate decision: {rate3}%
           </div>
-          <div className="flex flex-row gap-3 max-w-[182px]">
+          <div className="flex flex-row gap-3 max-w-[190px]">
             <Input
               id="r3"
               placeholder="Enter rate"
@@ -444,7 +444,7 @@ function Game(props: { mg: boolean }) {
           <div className="text-red-500 md:text-2xl">
             Your rate decision: {rate4}%
           </div>
-          <div className="flex flex-row gap-3 max-w-[182px]">
+          <div className="flex flex-row gap-3 max-w-[190px]">
             <Input
               id="r4"
               placeholder="Enter rate"
@@ -529,7 +529,7 @@ function Game(props: { mg: boolean }) {
             )}
           </div>
           {!props.mg && gameHistory && (
-            <div className="flex text-xs sm:text-base gap-3 px-3">
+            <div className="flex text-center text-xs sm:text-base gap-3 px-3">
               <div className="flex flex-col items-center">
                 <div className="flex">Total Games</div>
                 <div className="flex text-xl sm:text-2xl">
