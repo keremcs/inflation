@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "@/types/supabase";
 import { DeezButton } from "@/components/deez-button";
+import { DeezCounter } from "@/components/deez-counter";
 import { LoadingButton } from "@/components/loading-button";
 import { PublicFetcher } from "@/components/public-fetcher";
 import { Input } from "@/components/ui/input";
@@ -300,6 +301,7 @@ export default async function Public() {
             <DeezButton val={0} />
           </div>
         </div>
+        <DeezCounter />
       </form>
     </main>
   );

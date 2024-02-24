@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "@/types/supabase";
 import { DeezButton } from "@/components/deez-button";
+import { DeezCounter } from "@/components/deez-counter";
 import { LoadingButton } from "@/components/loading-button";
 import { GameFetcher } from "@/components/game-fetcher";
 import { Input } from "@/components/ui/input";
@@ -315,6 +316,7 @@ export default async function Apple() {
             <DeezButton val={balance * 0.25} />
           </div>
         </div>
+        <DeezCounter />
       </form>
     </main>
   );
