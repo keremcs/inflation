@@ -242,10 +242,12 @@ function Game(props: { uid: string; game: number; mg: boolean }) {
     <div className="flex flex-col items-center justify-center gap-3">
       {period === 1 && (
         <>
-          {!props.mg && (
-            <div>Neutral real rate is assumed to be 1 per cent</div>
+          {props.game === 0 && (
+            <>
+              <div>Neutral real rate is assumed to be 1 per cent</div>
+              <div>Inflation target is 2 per cent</div>
+            </>
           )}
-          <div>Inflation target is 2 per cent</div>
           <DataTable
             version={props.mg ? "Money Growth" : "Nominal Interest Rate"}
             p={period}
