@@ -3,64 +3,11 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { cbsend } from "./cbsend";
 
-// export default function CBGame() {
-//   const [gameKey, setGameKey] = useState<number>(7);
-//   const [gameMode, setGameMode] = useState<boolean>(true);
-//   return (
-//     <div className="flex flex-col items-center justify-center gap-3">
-//       {gameMode ? (
-//         <>
-//           <div className="flex p-4 text-2xl md:text-4xl">
-//             Interest Rate Version
-//           </div>
-//           <div className="flex gap-3">
-//             <Button
-//               variant="secondary"
-//               onClick={() => {
-//                 setGameMode(false);
-//                 setGameKey(Math.random());
-//               }}
-//             >
-//               Money Growth Version
-//             </Button>
-//             <Button
-//               variant="secondary"
-//               onClick={() => setGameKey(Math.random())}
-//             >
-//               Play Again
-//             </Button>
-//           </div>
-//           <Game key={gameKey} mg={false} />
-//         </>
-//       ) : (
-//         <>
-//           <div className="flex p-4 text-2xl md:text-4xl">
-//             Money Growth Version
-//           </div>
-//           <div className="flex gap-3">
-//             <Button
-//               variant="secondary"
-//               onClick={() => {
-//                 setGameMode(true);
-//                 setGameKey(Math.random());
-//               }}
-//             >
-//               Interest Rate Version
-//             </Button>
-//             <Button
-//               variant="secondary"
-//               onClick={() => setGameKey(Math.random())}
-//             >
-//               Play Again
-//             </Button>
-//           </div>
-//           <Game key={gameKey} mg={true} />
-//         </>
-//       )}
-//     </div>
-//   );
-// }
+export default function CBGame(props: { uid: string; game: number }) {
+  return <Game key={props.game} uid={props.uid} game={props.game} mg={false} />;
+}
 
 function DataTable(props: {
   version: string;
@@ -138,7 +85,7 @@ function DataTable(props: {
   );
 }
 
-export default function CBGame(props: { mg: boolean }) {
+function Game(props: { uid: string; game: number; mg: boolean }) {
   const initialValues = {
     period: 1,
     inflation0: 8,
@@ -193,6 +140,15 @@ export default function CBGame(props: { mg: boolean }) {
   const [score, setScore] = useState<number>(gameState.score);
   const [bestScore, setBestScore] = useState<number>(gameState.bestScore);
   const [gameStats, setGameStats] = useState(stats);
+  const [nahh, setNahh] = useState(false);
+
+  if (props.game === 2) {
+    return (
+      <div className="flex items-center justify-center text-2xl">
+        Thanks for playing!
+      </div>
+    );
+  }
 
   const iRandom = () => {
     const rand = parseFloat((Math.random() * 10).toFixed(2));
@@ -636,6 +592,22 @@ export default function CBGame(props: { mg: boolean }) {
               </div>
             </div>
           )}
+          <Button
+            variant={"secondary"}
+            onClick={() => {
+              setNahh(true);
+              localStorage.setItem("gameState", JSON.stringify(initialValues));
+              if (props.game === 0) {
+                cbsend(props.uid, 1, score, undefined);
+              }
+              if (props.game === 1) {
+                cbsend(props.uid, 2, undefined, score);
+              }
+            }}
+            disabled={nahh}
+          >
+            {props.game === 0 ? "Play Again" : "Submit Score"}
+          </Button>
         </>
       )}
     </div>
