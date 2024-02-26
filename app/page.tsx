@@ -1,5 +1,7 @@
-import CBGame from "@/components/cbgame";
 import Hamburger from "@/components/hamburger";
+import dynamic from "next/dynamic";
+
+const DNGame = dynamic(() => import("@/components/cbgame"), { ssr: false });
 
 export default function Home() {
   return (
@@ -16,7 +18,7 @@ export default function Home() {
         </div>
       </div>
       <div className="flex grow justify-center">
-        <CBGame />
+        <DNGame mg={false} />
       </div>
     </main>
   );
