@@ -29,6 +29,8 @@ export default async function Result() {
   const aggregate = data.map((d) => {
     return {
       username: d.username,
+      s1: d.s1,
+      s2: d.s2,
       score: d.s1 + d.s2,
     };
   });
@@ -52,9 +54,16 @@ export default async function Result() {
           {aggregate
             .sort((a, b) => b.score - a.score)
             .map((d, i) => (
-              <li key={d.username} className="flex justify-between gap-6">
+              <li
+                key={d.username}
+                className="flex items-center justify-between text-sm sm:text-2xl text-center gap-6"
+              >
                 <div>{i + 1 + ". " + d.username}</div>
-                <div>{d.score.toFixed(2)}</div>
+                <div className="flex flex-col text-xs sm:text-xl">
+                  <div>{"Game 1: " + d.s1.toFixed(2)}</div>
+                  <div>{"Game 2: " + d.s2.toFixed(2)}</div>
+                </div>
+                <div>{"Total: " + d.score.toFixed(2)}</div>
               </li>
             ))}
         </ul>
