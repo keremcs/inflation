@@ -600,10 +600,40 @@ function Game(props: { uid: string; game: number; mg: boolean }) {
               setNahh(true);
               localStorage.setItem("gameState", JSON.stringify(initialValues));
               if (props.game === 0) {
-                cbsend(props.uid, 1, score, undefined);
+                cbsend(props.uid, 1, {
+                  i0: inflation0,
+                  i1: inflation1,
+                  i2: inflation2,
+                  i3: inflation3,
+                  i4: inflation4,
+                  o1: og1,
+                  o2: og2,
+                  o3: og3,
+                  o4: og4,
+                  r1: rate1,
+                  r2: rate2,
+                  r3: rate3,
+                  r4: rate4,
+                  s: score,
+                });
               }
               if (props.game === 1) {
-                cbsend(props.uid, 2, undefined, score);
+                cbsend(props.uid, 2, {
+                  i0: inflation0,
+                  i1: inflation1,
+                  i2: inflation2,
+                  i3: inflation3,
+                  i4: inflation4,
+                  o1: og1,
+                  o2: og2,
+                  o3: og3,
+                  o4: og4,
+                  r1: rate1,
+                  r2: rate2,
+                  r3: rate3,
+                  r4: rate4,
+                  s: score,
+                });
               }
             }}
             disabled={nahh}

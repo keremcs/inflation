@@ -95,6 +95,7 @@ export default async function Home({
           <Input
             type="text"
             name="username"
+            className="text-sm"
             placeholder="Username"
             pattern="[a-zA-Z0-9]{3,11}"
             required
