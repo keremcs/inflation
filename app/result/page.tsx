@@ -20,8 +20,7 @@ export default async function Result() {
 
   const { data, error } = await supabase
     .from("cbgame")
-    .select("username, s1, s2")
-    .limit(5);
+    .select("username, s1, s2");
   if (error || data.length === 0) {
     redirect("/");
   }
