@@ -3,10 +3,63 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cbsend } from "./cbsend";
 
-export default function CBGame(props: { uid: string; game: number }) {
-  return <Game key={props.game} uid={props.uid} game={props.game} mg={true} />;
+export default function CBGame() {
+  const [gameKey, setGameKey] = useState<number>(7);
+  const [gameMode, setGameMode] = useState<boolean>(true);
+  return (
+    <div className="flex flex-col items-center justify-center gap-3">
+      {gameMode ? (
+        <>
+          <div className="flex p-4 text-2xl md:text-4xl">
+            Interest Rate Version
+          </div>
+          <div className="flex gap-3">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setGameMode(false);
+                setGameKey(Math.random());
+              }}
+            >
+              Money Growth Version
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => setGameKey(Math.random())}
+            >
+              Play Again
+            </Button>
+          </div>
+          <Game key={gameKey} mg={false} />
+        </>
+      ) : (
+        <>
+          <div className="flex p-4 text-2xl md:text-4xl">
+            Money Growth Version
+          </div>
+          <div className="flex gap-3">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setGameMode(true);
+                setGameKey(Math.random());
+              }}
+            >
+              Interest Rate Version
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => setGameKey(Math.random())}
+            >
+              Play Again
+            </Button>
+          </div>
+          <Game key={gameKey} mg={true} />
+        </>
+      )}
+    </div>
+  );
 }
 
 function DataTable(props: {
@@ -85,57 +138,29 @@ function DataTable(props: {
   );
 }
 
-function Game(props: { uid: string; game: number; mg: boolean }) {
-  const initialValues = {
-    period: 1,
-    inflation0: 8,
-    inflation1: 0,
-    inflation2: 0,
-    inflation3: 0,
-    inflation4: 0,
-    og0: 0,
-    og1: 0,
-    og2: 0,
-    og3: 0,
-    og4: 0,
-    rate0: 8,
-    rate1: 0,
-    rate2: 0,
-    rate3: 0,
-    rate4: 0,
-    score: 7,
-  };
-
-  const getGameState =
-    localStorage.getItem("moneyState") ?? JSON.stringify(initialValues);
-  const gameState: typeof initialValues = JSON.parse(getGameState);
-
-  const [period, setPeriod] = useState<number>(gameState.period);
-  const [inflation0, setInflation0] = useState<number>(gameState.inflation0);
-  const [inflation1, setInflation1] = useState<number>(gameState.inflation1);
-  const [inflation2, setInflation2] = useState<number>(gameState.inflation2);
-  const [inflation3, setInflation3] = useState<number>(gameState.inflation3);
-  const [inflation4, setInflation4] = useState<number>(gameState.inflation4);
-  const [og0, setOg0] = useState<number>(gameState.og0);
-  const [og1, setOg1] = useState<number>(gameState.og1);
-  const [og2, setOg2] = useState<number>(gameState.og2);
-  const [og3, setOg3] = useState<number>(gameState.og3);
-  const [og4, setOg4] = useState<number>(gameState.og4);
-  const [rate0, setRate0] = useState<number>(gameState.rate0);
-  const [rate1, setRate1] = useState<number>(gameState.rate1);
-  const [rate2, setRate2] = useState<number>(gameState.rate2);
-  const [rate3, setRate3] = useState<number>(gameState.rate3);
-  const [rate4, setRate4] = useState<number>(gameState.rate4);
-  const [score, setScore] = useState<number>(gameState.score);
-  const [nahh, setNahh] = useState(false);
-
-  if (props.game === 2) {
-    return (
-      <div className="flex items-center justify-center text-2xl">
-        Thanks for playing!
-      </div>
-    );
-  }
+function Game(props: { mg: boolean }) {
+  const [period, setPeriod] = useState<number>(1);
+  const [inflation0, setInflation0] = useState<number>(8);
+  const [inflation1, setInflation1] = useState<number>(0);
+  const [inflation2, setInflation2] = useState<number>(0);
+  const [inflation3, setInflation3] = useState<number>(0);
+  const [inflation4, setInflation4] = useState<number>(0);
+  const [og0, setOg0] = useState<number>(0);
+  const [og1, setOg1] = useState<number>(0);
+  const [og2, setOg2] = useState<number>(0);
+  const [og3, setOg3] = useState<number>(0);
+  const [og4, setOg4] = useState<number>(0);
+  const [rate0, setRate0] = useState<number>(9);
+  const [rate1, setRate1] = useState<number>(0);
+  const [rate2, setRate2] = useState<number>(0);
+  const [rate3, setRate3] = useState<number>(0);
+  const [rate4, setRate4] = useState<number>(0);
+  const [score, setScore] = useState<number>(7);
+  const [gameHistory, setGameHistory] = useState<{
+    games: number;
+    average: number;
+    maxScore: number;
+  }>();
 
   const iRandom = () => {
     const rand = parseFloat((Math.random() * 10).toFixed(2));
@@ -181,17 +206,44 @@ function Game(props: { uid: string; game: number; mg: boolean }) {
     const min0 = calc < 0 ? 0 : calc;
     setScore(min0);
 
-    localStorage.setItem(
-      "moneyState",
-      JSON.stringify({
-        ...gameState,
-        period: 5,
-        inflation4: inf,
-        og4: og,
-        rate4: rate4,
-        score: min0,
-      })
-    );
+    // const res1 = irFormula(2 * inflation0 - 1, inflation0);
+    // const res2 = irFormula(3, res1.tinf);
+    // const res3 = irFormula(3, res2.tinf);
+    // const res4 = irFormula(0.5, res3.tinf);
+    // const findBestScore =
+    //   200 -
+    //   Math.pow(res1.tinf - 2, 2) -
+    //   Math.pow(res2.tinf - 2, 2) -
+    //   Math.pow(res3.tinf - 2, 2) -
+    //   Math.pow(res4.tinf - 2, 2) +
+    //   5 * res1.tog +
+    //   5 * res2.tog +
+    //   5 * res3.tog +
+    //   5 * res4.tog;
+    // setBestScore(findBestScore);
+
+    if (!props.mg) {
+      const history: {
+        games: number;
+        average: number;
+        maxScore: number;
+      } = JSON.parse(
+        localStorage.getItem("stats") ??
+          JSON.stringify({
+            games: 0,
+            average: 0,
+            maxScore: 0,
+          })
+      );
+
+      const wizard = {
+        games: history.games + 1,
+        average: (history.average * history.games + min0) / (history.games + 1),
+        maxScore: min0 > history.maxScore ? min0 : history.maxScore,
+      };
+      setGameHistory(wizard);
+      localStorage.setItem("stats", JSON.stringify(wizard));
+    }
 
     return setPeriod(5);
   };
@@ -200,9 +252,6 @@ function Game(props: { uid: string; game: number; mg: boolean }) {
     <div className="flex flex-col items-center justify-center gap-3">
       {period === 1 && (
         <>
-          <div>Inflation target is 2 per cent</div>
-          <div>Potential real growth is 0 per cent</div>
-          <div>Velocity of money is assumed to be constant</div>
           <DataTable
             version={props.mg ? "Money Growth" : "Nominal Interest Rate"}
             p={period}
@@ -210,6 +259,15 @@ function Game(props: { uid: string; game: number; mg: boolean }) {
             r0={props.mg ? inflation0 : rate0}
             o0={og0}
           />
+          <div>Inflation target is 2 per cent</div>
+          {props.mg ? (
+            <>
+              <div>Potential real growth is 0 per cent</div>
+              <div>Velocity of money is assumed to be constant</div>
+            </>
+          ) : (
+            <div>Neutral real rate is assumed to be 1 per cent</div>
+          )}
           <div className="text-red-500 md:text-2xl">
             Your rate decision: {rate1}%
           </div>
@@ -232,16 +290,6 @@ function Game(props: { uid: string; game: number; mg: boolean }) {
                   setInflation1(data.tinf);
                   setOg1(data.tog);
                   setPeriod(2);
-                  localStorage.setItem(
-                    "moneyState",
-                    JSON.stringify({
-                      ...gameState,
-                      period: 2,
-                      inflation1: data.tinf,
-                      og1: data.tog,
-                      rate1: rate1,
-                    })
-                  );
                 }
               }}
             />
@@ -253,16 +301,6 @@ function Game(props: { uid: string; game: number; mg: boolean }) {
                 setInflation1(data.tinf);
                 setOg1(data.tog);
                 setPeriod(2);
-                localStorage.setItem(
-                  "moneyState",
-                  JSON.stringify({
-                    ...gameState,
-                    period: 2,
-                    inflation1: data.tinf,
-                    og1: data.tog,
-                    rate1: rate1,
-                  })
-                );
               }}
             >
               Next
@@ -304,16 +342,6 @@ function Game(props: { uid: string; game: number; mg: boolean }) {
                   setInflation2(data.tinf);
                   setOg2(data.tog);
                   setPeriod(3);
-                  localStorage.setItem(
-                    "moneyState",
-                    JSON.stringify({
-                      ...gameState,
-                      period: 3,
-                      inflation2: data.tinf,
-                      og2: data.tog,
-                      rate2: rate2,
-                    })
-                  );
                 }
               }}
               autoFocus
@@ -326,16 +354,6 @@ function Game(props: { uid: string; game: number; mg: boolean }) {
                 setInflation2(data.tinf);
                 setOg2(data.tog);
                 setPeriod(3);
-                localStorage.setItem(
-                  "moneyState",
-                  JSON.stringify({
-                    ...gameState,
-                    period: 3,
-                    inflation2: data.tinf,
-                    og2: data.tog,
-                    rate2: rate2,
-                  })
-                );
               }}
             >
               Next
@@ -380,16 +398,6 @@ function Game(props: { uid: string; game: number; mg: boolean }) {
                   setInflation3(data.tinf);
                   setOg3(data.tog);
                   setPeriod(4);
-                  localStorage.setItem(
-                    "moneyState",
-                    JSON.stringify({
-                      ...gameState,
-                      period: 4,
-                      inflation3: data.tinf,
-                      og3: data.tog,
-                      rate3: rate3,
-                    })
-                  );
                 }
               }}
               autoFocus
@@ -402,16 +410,6 @@ function Game(props: { uid: string; game: number; mg: boolean }) {
                 setInflation3(data.tinf);
                 setOg3(data.tog);
                 setPeriod(4);
-                localStorage.setItem(
-                  "moneyState",
-                  JSON.stringify({
-                    ...gameState,
-                    period: 4,
-                    inflation3: data.tinf,
-                    og3: data.tog,
-                    rate3: rate3,
-                  })
-                );
               }}
             >
               Next
@@ -513,54 +511,28 @@ function Game(props: { uid: string; game: number; mg: boolean }) {
               </div>
             )}
           </div>
-          <Button
-            variant={"secondary"}
-            onClick={() => {
-              setNahh(true);
-              localStorage.setItem("moneyState", JSON.stringify(initialValues));
-              if (props.game === 0) {
-                cbsend(props.uid, 1, {
-                  i0: inflation0,
-                  i1: inflation1,
-                  i2: inflation2,
-                  i3: inflation3,
-                  i4: inflation4,
-                  o0: og0,
-                  o1: og1,
-                  o2: og2,
-                  o3: og3,
-                  o4: og4,
-                  r1: rate1,
-                  r2: rate2,
-                  r3: rate3,
-                  r4: rate4,
-                  s: score,
-                });
-              }
-              if (props.game === 1) {
-                cbsend(props.uid, 2, {
-                  i0: inflation0,
-                  i1: inflation1,
-                  i2: inflation2,
-                  i3: inflation3,
-                  i4: inflation4,
-                  o0: og0,
-                  o1: og1,
-                  o2: og2,
-                  o3: og3,
-                  o4: og4,
-                  r1: rate1,
-                  r2: rate2,
-                  r3: rate3,
-                  r4: rate4,
-                  s: score,
-                });
-              }
-            }}
-            disabled={nahh}
-          >
-            {props.game === 0 ? "Play Again" : "Submit Score"}
-          </Button>
+          {!props.mg && gameHistory && (
+            <div className="flex text-center text-xs sm:text-base gap-3 px-3">
+              <div className="flex flex-col items-center">
+                <div className="flex">Total Games</div>
+                <div className="flex text-xl sm:text-2xl">
+                  {gameHistory.games}
+                </div>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="flex">Average Score</div>
+                <div className="flex text-xl sm:text-2xl">
+                  {gameHistory.average.toFixed(2)}
+                </div>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="flex">Maximum Score</div>
+                <div className="flex text-xl sm:text-2xl">
+                  {gameHistory.maxScore.toFixed(2)}
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>
