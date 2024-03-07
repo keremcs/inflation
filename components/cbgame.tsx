@@ -129,7 +129,7 @@ function Game(props: { uid: string; game: number; mg: boolean }) {
   const [score, setScore] = useState<number>(gameState.score);
   const [nahh, setNahh] = useState(false);
 
-  if (props.game === 0) {
+  if (props.game === 2) {
     return (
       <div className="flex items-center justify-center text-2xl">
         Thanks for playing!

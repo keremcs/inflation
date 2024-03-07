@@ -47,7 +47,7 @@ export default async function Result() {
           <div className="flex w-[90px] justify-end"></div>
         </div>
       </div>
-      <div className="flex flex-col grow items-center justify-center gap-6">
+      <div className="flex flex-col grow items-center justify-center gap-6 py-12">
         <div className="text-4xl">Leaderboard</div>
         <ul className="flex flex-col text-2xl gap-3">
           {aggregate
