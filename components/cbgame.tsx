@@ -201,7 +201,7 @@ function Game(props: { uid: string; game: number; mg: boolean }) {
       {period === 1 && (
         <>
           <div>Inflation target is 2 per cent</div>
-          <div>Potential real growth is 1 per cent</div>
+          <div>Potential real growth is 0 per cent</div>
           <div>Velocity of money is assumed to be constant</div>
           <DataTable
             version={props.mg ? "Money Growth" : "Nominal Interest Rate"}
