@@ -90,10 +90,10 @@ export default async function Admin({
     }
 
     const per = Number(formData.get("per"));
-    const inc = Number(formData.get("inc"));
+    const dinc = Number(formData.get("dinc"));
     const { error: rpcError } = await supabaseAction.rpc("magic", {
       game_id: id,
-      income: inc,
+      income: dinc,
       perio: per,
     });
     if (rpcError) {
@@ -147,9 +147,6 @@ export default async function Admin({
 
     return (
       <main className="min-h-screen flex flex-col justify-center items-center text-2xl gap-6 p-12">
-        <div className="flex text-center text-4xl">
-          Velocity of Money Admin Panel
-        </div>
         {isActive ? (
           <span className="text-green-500">Game is active</span>
         ) : (
@@ -161,10 +158,12 @@ export default async function Admin({
             <span className="text-red-500">Game Ended</span>
           </>
         )}
-        <div>Game: {gameId}</div>
         <div>Period: {gamePeriod}</div>
-        <form className="flex flex-col items-center gap-6" action={admin}>
-          <div className="flex">Next Period</div>
+        <form
+          className="flex flex-col items-center rounded-md gap-6 p-6 bg-secondary"
+          action={admin}
+        >
+          <div>Next Period</div>
           <Input
             type="number"
             name="inc"
@@ -186,13 +185,13 @@ export default async function Admin({
           <span className="text-center text-red-500">{searchParams.error}</span>
         )}
         <form
-          className="flex flex-col items-center gap-6 pt-24"
+          className="flex flex-col items-center rounded-md gap-6 p-6 bg-red-500"
           action={endgame}
         >
-          <div className="flex text-red-500">End Game</div>
+          <div>End Game</div>
           <Input
             type="number"
-            name="inc"
+            name="dinc"
             step={0.01}
             placeholder="growth rate"
             required

@@ -68,14 +68,14 @@ export default function ResultPage({ data }: { data: Logs }) {
             type="monotone"
             dataKey="money"
             name="Money Growth"
-            stroke="#8884d8"
+            stroke="#00ff00"
           />
           <Line
             dot={false}
             type="monotone"
             dataKey="price"
             name="Inflation"
-            stroke="#82ca9d"
+            stroke="#ff0000"
           />
         </LineChart>
         <LineChart
@@ -101,7 +101,7 @@ export default function ResultPage({ data }: { data: Logs }) {
             type="monotone"
             dataKey="velocity"
             name="Velocity"
-            stroke="#8884d8"
+            stroke="#0000ff"
           />
         </LineChart>
       </div>
