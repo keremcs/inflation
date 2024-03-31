@@ -1,4 +1,4 @@
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "@/types/supabase";
 import { DeezButton } from "@/components/deez-button";
@@ -197,6 +197,7 @@ export default async function Apple() {
     );
 
     const unique = uparsed.data.username + "." + iHope;
+    cookies().set("username", unique);
 
     const { error: newError } = await supabaseUction.from("iplayers").insert({
       ip,
@@ -211,6 +212,20 @@ export default async function Apple() {
   }
 
   if (player.length === 0 && gamePeriod === 0) {
+    const cookiename = cookies().get("username")?.value;
+    if (cookiename) {
+      const { error: nahhError } = await supabase.from("iplayers").insert({
+        ip,
+        game: gameId,
+        username: cookiename,
+      });
+      if (nahhError) {
+        redirect(`/apple?error=${nahhError.message}`);
+      }
+
+      redirect("/apple");
+    }
+
     return (
       <main className="min-h-screen flex flex-col justify-center items-center p-12">
         <form className="flex flex-col gap-6" action={username}>
