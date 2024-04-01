@@ -44,7 +44,7 @@ export default function ResultPage({ data }: { data: Logs }) {
 
   return (
     <>
-      <div className="flex flex-wrap justify-center gap-3 sm:gap-16">
+      <div className="flex flex-wrap justify-center gap-3 sm:gap-16 dark:text-secondary">
         <LineChart
           width={350}
           height={350}
@@ -61,7 +61,7 @@ export default function ResultPage({ data }: { data: Logs }) {
             label={{ value: "Period", position: "bottom" }}
           />
           <YAxis />
-          <Tooltip contentStyle={{ background: "black" }} />
+          <Tooltip />
           <Legend verticalAlign="top" height={36} />
           <Line
             dot={false}
@@ -94,7 +94,7 @@ export default function ResultPage({ data }: { data: Logs }) {
             label={{ value: "Period", position: "bottom" }}
           />
           <YAxis />
-          <Tooltip contentStyle={{ background: "black" }} />
+          <Tooltip />
           <Legend verticalAlign="top" height={36} />
           <Line
             dot={false}
