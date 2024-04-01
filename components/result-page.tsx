@@ -26,8 +26,8 @@ export default function ResultPage({ data }: { data: Logs }) {
     if (index === 0) {
       return {
         period: 0,
-        money: 30,
-        price: 30,
+        money: 0,
+        price: 0,
       };
     }
 
