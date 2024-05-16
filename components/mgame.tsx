@@ -3,14 +3,14 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cbsend } from "./cbsend";
+import { msend } from "./msend";
 
-export default function CBGame(props: { uid: number; game: number }) {
+export default function MGame(props: { uid: number; game: number }) {
   return (
     <div className="flex flex-col items-center justify-center gap-3">
       {props.game !== 2 && (
         <div className="flex p-4 text-2xl md:text-4xl">
-          Interest Rate Version
+          Money Growth Version
         </div>
       )}
       <Game key={props.game} uid={props.uid} game={props.game} />
@@ -107,7 +107,7 @@ function Game(props: { uid: number; game: number }) {
     og2: 0,
     og3: 0,
     og4: 0,
-    rate0: 9,
+    rate0: 8,
     rate1: 0,
     rate2: 0,
     rate3: 0,
@@ -116,7 +116,7 @@ function Game(props: { uid: number; game: number }) {
   };
 
   const getGameState =
-    localStorage.getItem("gameState") ?? JSON.stringify(initialValues);
+    localStorage.getItem("moneyState") ?? JSON.stringify(initialValues);
   const gameState: typeof initialValues = JSON.parse(getGameState);
 
   const [period, setPeriod] = useState<number>(gameState.period);
@@ -140,21 +140,18 @@ function Game(props: { uid: number; game: number }) {
 
   if (props.game === 2) {
     return (
-      <div className="flex flex-col gap-6 items-center justify-center">
-        <div className="text-2xl">Thanks for playing!</div>
-        <Button variant="secondary" asChild>
-          <a href="/money">Money Growth Version</a>
-        </Button>
+      <div className="flex items-center justify-center text-2xl">
+        Thanks for playing!
       </div>
     );
   }
 
-  function irFormula(r: number, i: number) {
-    const og = i - r + 1;
-    const inf = i + og;
-    const tog = Number(og.toFixed(2));
+  function mgFormula(m: number, i: number, o: number) {
+    const inf = (0.25 * i + 0.75 * (2 * m + o)) / 1.75;
+    const og = m - inf + o;
     const tinf = Number(inf.toFixed(2));
-    return { tog, tinf };
+    const tog = Number(og.toFixed(2));
+    return { tinf, tog };
   }
 
   const result = (inf: number, og: number) => {
@@ -172,7 +169,7 @@ function Game(props: { uid: number; game: number }) {
     setScore(min0);
 
     localStorage.setItem(
-      "gameState",
+      "moneyState",
       JSON.stringify({
         ...gameState,
         period: 5,
@@ -193,11 +190,12 @@ function Game(props: { uid: number; game: number }) {
           {props.game === 0 && (
             <>
               <div>Inflation target is 2 per cent</div>
-              <div>Neutral real rate is assumed to be 1 per cent</div>
+              <div>Potential real growth is 0 per cent</div>
+              <div>Velocity of money is assumed to be constant</div>
             </>
           )}
           <DataTable
-            version={"Nominal Interest Rate"}
+            version={"Money Growth"}
             p={period}
             i0={inflation0}
             r0={rate0}
@@ -219,12 +217,12 @@ function Game(props: { uid: number; game: number }) {
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  const data = irFormula(rate1, inflation0);
+                  const data = mgFormula(rate1, inflation0, og0);
                   setInflation1(data.tinf);
                   setOg1(data.tog);
                   setPeriod(2);
                   localStorage.setItem(
-                    "gameState",
+                    "moneyState",
                     JSON.stringify({
                       ...gameState,
                       period: 2,
@@ -238,12 +236,12 @@ function Game(props: { uid: number; game: number }) {
             />
             <Button
               onClick={() => {
-                const data = irFormula(rate1, inflation0);
+                const data = mgFormula(rate1, inflation0, og0);
                 setInflation1(data.tinf);
                 setOg1(data.tog);
                 setPeriod(2);
                 localStorage.setItem(
-                  "gameState",
+                  "moneyState",
                   JSON.stringify({
                     ...gameState,
                     period: 2,
@@ -262,7 +260,7 @@ function Game(props: { uid: number; game: number }) {
       {period === 2 && (
         <>
           <DataTable
-            version={"Nominal Interest Rate"}
+            version={"Money Growth"}
             p={period}
             i0={inflation0}
             i1={inflation1}
@@ -287,12 +285,12 @@ function Game(props: { uid: number; game: number }) {
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  const data = irFormula(rate2, inflation1);
+                  const data = mgFormula(rate2, inflation1, og1);
                   setInflation2(data.tinf);
                   setOg2(data.tog);
                   setPeriod(3);
                   localStorage.setItem(
-                    "gameState",
+                    "moneyState",
                     JSON.stringify({
                       ...gameState,
                       period: 3,
@@ -307,12 +305,12 @@ function Game(props: { uid: number; game: number }) {
             />
             <Button
               onClick={() => {
-                const data = irFormula(rate2, inflation1);
+                const data = mgFormula(rate2, inflation1, og1);
                 setInflation2(data.tinf);
                 setOg2(data.tog);
                 setPeriod(3);
                 localStorage.setItem(
-                  "gameState",
+                  "moneyState",
                   JSON.stringify({
                     ...gameState,
                     period: 3,
@@ -331,7 +329,7 @@ function Game(props: { uid: number; game: number }) {
       {period === 3 && (
         <>
           <DataTable
-            version={"Nominal Interest Rate"}
+            version={"Money Growth"}
             p={period}
             i0={inflation0}
             i1={inflation1}
@@ -359,12 +357,12 @@ function Game(props: { uid: number; game: number }) {
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  const data = irFormula(rate3, inflation2);
+                  const data = mgFormula(rate3, inflation2, og2);
                   setInflation3(data.tinf);
                   setOg3(data.tog);
                   setPeriod(4);
                   localStorage.setItem(
-                    "gameState",
+                    "moneyState",
                     JSON.stringify({
                       ...gameState,
                       period: 4,
@@ -379,12 +377,12 @@ function Game(props: { uid: number; game: number }) {
             />
             <Button
               onClick={() => {
-                const data = irFormula(rate3, inflation2);
+                const data = mgFormula(rate3, inflation2, og2);
                 setInflation3(data.tinf);
                 setOg3(data.tog);
                 setPeriod(4);
                 localStorage.setItem(
-                  "gameState",
+                  "moneyState",
                   JSON.stringify({
                     ...gameState,
                     period: 4,
@@ -403,7 +401,7 @@ function Game(props: { uid: number; game: number }) {
       {period === 4 && (
         <>
           <DataTable
-            version={"Nominal Interest Rate"}
+            version={"Money Growth"}
             p={period}
             i0={inflation0}
             i1={inflation1}
@@ -434,7 +432,7 @@ function Game(props: { uid: number; game: number }) {
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  const data = irFormula(rate4, inflation3);
+                  const data = mgFormula(rate4, inflation3, og3);
                   setInflation4(data.tinf);
                   setOg4(data.tog);
                   result(data.tinf, data.tog);
@@ -444,7 +442,7 @@ function Game(props: { uid: number; game: number }) {
             />
             <Button
               onClick={() => {
-                const data = irFormula(rate4, inflation3);
+                const data = mgFormula(rate4, inflation3, og3);
                 setInflation4(data.tinf);
                 setOg4(data.tog);
                 result(data.tinf, data.tog);
@@ -458,7 +456,7 @@ function Game(props: { uid: number; game: number }) {
       {period === 5 && (
         <>
           <DataTable
-            version={"Interest Rate"}
+            version={"Money Growth"}
             p={period}
             i0={inflation0}
             i1={inflation1}
@@ -494,14 +492,15 @@ function Game(props: { uid: number; game: number }) {
             variant={"secondary"}
             onClick={() => {
               setNahh(true);
-              localStorage.setItem("gameState", JSON.stringify(initialValues));
+              localStorage.setItem("moneyState", JSON.stringify(initialValues));
               if (props.game === 0) {
-                cbsend(props.uid, 1, {
+                msend(props.uid, 1, {
                   i0: inflation0,
                   i1: inflation1,
                   i2: inflation2,
                   i3: inflation3,
                   i4: inflation4,
+                  o0: og0,
                   o1: og1,
                   o2: og2,
                   o3: og3,
@@ -514,12 +513,13 @@ function Game(props: { uid: number; game: number }) {
                 });
               }
               if (props.game === 1) {
-                cbsend(props.uid, 2, {
+                msend(props.uid, 2, {
                   i0: inflation0,
                   i1: inflation1,
                   i2: inflation2,
                   i3: inflation3,
                   i4: inflation4,
+                  o0: og0,
                   o1: og1,
                   o2: og2,
                   o3: og3,

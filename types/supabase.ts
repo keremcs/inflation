@@ -9,6 +9,66 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      cbgame: {
+        Row: {
+          id: number;
+          ip: string;
+          game: number;
+          s1: number;
+          s2: number;
+          username: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: number;
+          ip?: string;
+          game?: number;
+          s1?: number;
+          s2?: number;
+          username?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: number;
+          ip?: string;
+          game?: number;
+          s1?: number;
+          s2?: number;
+          username?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      mgame: {
+        Row: {
+          id: number;
+          ip: string;
+          game: number;
+          s1: number;
+          s2: number;
+          username: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: number;
+          ip?: string;
+          game?: number;
+          s1?: number;
+          s2?: number;
+          username?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: number;
+          ip?: string;
+          game?: number;
+          s1?: number;
+          s2?: number;
+          username?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       games: {
         Row: {
           active: boolean;

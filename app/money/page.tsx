@@ -8,9 +8,9 @@ import { z } from "zod";
 import Hamburger from "@/components/hamburger";
 import dynamic from "next/dynamic";
 
-const DNGame = dynamic(() => import("@/components/cbgame"), { ssr: false });
+const DGame = dynamic(() => import("@/components/mgame"), { ssr: false });
 
-export default async function Home({
+export default async function Money({
   searchParams,
 }: {
   searchParams: { message: string };
@@ -31,12 +31,12 @@ export default async function Home({
   );
 
   const { data: player, error: playerError } = await supabase
-    .from("cbgame")
+    .from("mgame")
     .select("id, game")
     .eq("ip", ip)
     .eq("username", username);
   if (playerError) {
-    redirect(`/?message=${playerError.message}`);
+    redirect(`/money?message=${playerError.message}`);
   }
 
   async function setUsername(formData: FormData) {
@@ -53,7 +53,7 @@ export default async function Home({
       username: formData.get("username"),
     });
     if (!uparsed.success) {
-      redirect("/?message=Invalid%20username");
+      redirect("/money?message=Invalid%20username");
     }
 
     const supabaseUction = createClient<Database>(
@@ -68,7 +68,7 @@ export default async function Home({
       }
     );
 
-    const { error: newError } = await supabaseUction.from("cbgame").insert({
+    const { error: newError } = await supabaseUction.from("mgame").insert({
       ip,
       username: uparsed.data.username,
       game: 0,
@@ -77,17 +77,56 @@ export default async function Home({
     });
     if (newError) {
       if (newError.code === "23505") {
-        redirect("/?message=Username%20taken");
+        redirect("/money?message=Username%20taken");
       }
-      redirect(`/?message=${newError.message}`);
+      redirect(`/money?message=${newError.message}`);
     }
 
     cookies().set("username", uparsed.data.username);
 
-    redirect("/");
+    redirect("/money");
   }
 
   if (player.length === 0) {
+    if (username !== "dn") {
+      const { error: existError } = await supabase.from("mgame").insert({
+        ip,
+        username,
+        game: 0,
+        s1: 0,
+        s2: 0,
+      });
+      if (existError) {
+        if (existError.code === "23505") {
+          return (
+            <main className="min-h-screen flex flex-col justify-center items-center p-12">
+              <form className="flex flex-col gap-6" action={setUsername}>
+                <div className="flex justify-center">Enter your username</div>
+                <Input
+                  type="text"
+                  name="username"
+                  className="text-sm"
+                  placeholder="Username"
+                  pattern="[a-zA-Z0-9]{3,11}"
+                  required
+                />
+                <LoadingButton />
+                {searchParams?.message && (
+                  <p className="text-red-500 text-center">
+                    {searchParams.message}
+                  </p>
+                )}
+              </form>
+            </main>
+          );
+        }
+
+        redirect(`/money?message=${existError.message}`);
+      }
+
+      redirect("/money");
+    }
+
     return (
       <main className="min-h-screen flex flex-col justify-center items-center p-12">
         <form className="flex flex-col gap-6" action={setUsername}>
@@ -126,7 +165,7 @@ export default async function Home({
         </div>
       </div>
       <div className="flex flex-col grow justify-center gap-6">
-        <DNGame uid={playerId} game={playerGame} />
+        <DGame uid={playerId} game={playerGame} />
         {searchParams?.message && (
           <p className="text-red-500 text-center">{searchParams.message}</p>
         )}
