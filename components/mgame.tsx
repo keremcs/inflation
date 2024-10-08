@@ -534,7 +534,7 @@ function Game(props: { uid: number; game: number }) {
             }}
             disabled={nahh}
           >
-            {props.game === 0 ? "Play Again" : "Submit Score"}
+            {props.game === 0 ? "Play Again" : "Continue"}
           </Button>
         </>
       )}

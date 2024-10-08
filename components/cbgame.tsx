@@ -141,9 +141,11 @@ function Game(props: { uid: number; game: number }) {
   if (props.game === 2) {
     return (
       <div className="flex flex-col gap-6 items-center justify-center">
-        <div className="text-2xl">Thanks for playing!</div>
+        <div className="text-2xl text-center">
+          Interest Rate Version Completed
+        </div>
         <Button variant="secondary" asChild>
-          <a href="/money">Money Growth Version</a>
+          <a href="/money">Play Money Growth Version</a>
         </Button>
       </div>
     );
@@ -534,7 +536,7 @@ function Game(props: { uid: number; game: number }) {
             }}
             disabled={nahh}
           >
-            {props.game === 0 ? "Play Again" : "Submit Score"}
+            {props.game === 0 ? "Play Again" : "Continue"}
           </Button>
         </>
       )}

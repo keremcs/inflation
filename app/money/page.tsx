@@ -153,7 +153,7 @@ export default async function Money({
 
   return (
     <main className="min-h-screen flex flex-col">
-      <div className="flex flex-row justify-center border-b h-[57px]">
+      {/* <div className="flex flex-row justify-center border-b h-[57px]">
         <div className="flex items-center justify-between max-w-4xl w-full px-4">
           <div className="flex w-[90px] justify-start">
             <Hamburger />
@@ -163,7 +163,7 @@ export default async function Money({
           </a>
           <div className="flex w-[90px] justify-end"></div>
         </div>
-      </div>
+      </div> */}
       <div className="flex flex-col grow justify-center gap-6">
         <DGame uid={playerId} game={playerGame} />
         {searchParams?.message && (

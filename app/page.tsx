@@ -43,17 +43,13 @@ export default async function Home({
     "use server";
 
     const uchema = z.object({
-      username: z
-        .string()
-        .min(3)
-        .max(11)
-        .regex(/^[a-zA-Z0-9]+$/),
+      username: z.string().email().endsWith("tedu.edu.tr"),
     });
     const uparsed = uchema.safeParse({
       username: formData.get("username"),
     });
     if (!uparsed.success) {
-      redirect("/?message=Invalid%20username");
+      redirect("/?message=Invalid%20address");
     }
 
     const supabaseUction = createClient<Database>(
@@ -68,9 +64,10 @@ export default async function Home({
       }
     );
 
+    const firstPart = uparsed.data.username.split("@")[0];
     const { error: newError } = await supabaseUction.from("cbgame").insert({
       ip,
-      username: uparsed.data.username,
+      username: firstPart,
       game: 0,
       s1: 0,
       s2: 0,
@@ -82,22 +79,21 @@ export default async function Home({
       redirect(`/?message=${newError.message}`);
     }
 
-    cookies().set("username", uparsed.data.username);
+    cookies().set("username", firstPart);
 
     redirect("/");
   }
 
   if (player.length === 0) {
     return (
-      <main className="min-h-screen flex flex-col justify-center items-center p-12">
+      <main className="min-h-screen flex justify-center items-center p-12">
         <form className="flex flex-col gap-6" action={setUsername}>
-          <div className="flex justify-center">Enter your username</div>
+          <div className="flex justify-center">Enter your TEDU E-mail</div>
           <Input
-            type="text"
+            type="email"
             name="username"
             className="text-sm"
-            placeholder="Username"
-            pattern="[a-zA-Z0-9]{3,11}"
+            placeholder="TEDU E-mail"
             required
           />
           <LoadingButton />
@@ -114,7 +110,7 @@ export default async function Home({
 
   return (
     <main className="min-h-screen flex flex-col">
-      <div className="flex flex-row justify-center border-b h-[57px]">
+      {/* <div className="flex flex-row justify-center border-b h-[57px]">
         <div className="flex items-center justify-between max-w-4xl w-full px-4">
           <div className="flex w-[90px] justify-start">
             <Hamburger />
@@ -124,7 +120,7 @@ export default async function Home({
           </a>
           <div className="flex w-[90px] justify-end"></div>
         </div>
-      </div>
+      </div> */}
       <div className="flex flex-col grow justify-center gap-6">
         <DNGame uid={playerId} game={playerGame} />
         {searchParams?.message && (
