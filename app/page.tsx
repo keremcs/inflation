@@ -43,13 +43,17 @@ export default async function Home({
     "use server";
 
     const uchema = z.object({
-      username: z.string().email().endsWith("tedu.edu.tr"),
+      username: z
+        .string()
+        .min(3)
+        .max(11)
+        .regex(/^[a-zA-Z0-9]+$/),
     });
     const uparsed = uchema.safeParse({
       username: formData.get("username"),
     });
     if (!uparsed.success) {
-      redirect("/?message=Invalid%20address");
+      redirect("/?message=Invalid%20username");
     }
 
     const supabaseUction = createClient<Database>(
@@ -64,10 +68,9 @@ export default async function Home({
       }
     );
 
-    const firstPart = uparsed.data.username.split("@")[0];
     const { error: newError } = await supabaseUction.from("cbgame").insert({
       ip,
-      username: firstPart,
+      username: uparsed.data.username,
       game: 0,
       s1: 0,
       s2: 0,
@@ -79,7 +82,7 @@ export default async function Home({
       redirect(`/?message=${newError.message}`);
     }
 
-    cookies().set("username", firstPart);
+    cookies().set("username", uparsed.data.username);
 
     redirect("/");
   }
@@ -88,12 +91,13 @@ export default async function Home({
     return (
       <main className="min-h-screen flex justify-center items-center p-12">
         <form className="flex flex-col gap-6" action={setUsername}>
-          <div className="flex justify-center">Enter your TEDU E-mail</div>
+          <div className="flex justify-center">Enter your username</div>
           <Input
-            type="email"
+            type="text"
             name="username"
             className="text-sm"
-            placeholder="TEDU E-mail"
+            placeholder="Username"
+            pattern="[a-zA-Z0-9]{3,11}"
             required
           />
           <LoadingButton />
