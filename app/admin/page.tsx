@@ -9,6 +9,7 @@ export default function Adm() {
       <Button asChild>
         <a href="/public/admin">Public Goods Admin Page</a>
       </Button>
+      {/* ADD DB RESET AND EXPORT TO CSV */}
     </main>
   );
 }
